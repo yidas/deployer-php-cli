@@ -4,7 +4,7 @@
 /**
  * Rsync Static Deployment Tool by PHP
  *
- * Rsync a specified source folder to destinate servers under the 
+ * Rsync a specified source folder to destination servers under the 
  * setting path, supporting filtering files from excludeList.
  *
  * @version     v1.1.2

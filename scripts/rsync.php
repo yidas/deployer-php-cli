@@ -4,7 +4,7 @@
 /**
  * Rsync Deployment Tool by PHP
  *
- * Rsync a file or a folder from current path to destinate servers with 
+ * Rsync a file or a folder from current path to destination servers with 
  * the same path automatically, the current path is base on Linux's 
  * "pwd -P" command.
  *
