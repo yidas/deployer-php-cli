@@ -14,7 +14,7 @@ The scripts including shell script for running php at the first line:
 ```
 You can customize it for correct php bin path in your environment, saving the file with binary encode.
 
-#### Servers setting
+#### - Servers setting:
 you need to set up the target servers' hostname or IP into the script file:
 
 ```
