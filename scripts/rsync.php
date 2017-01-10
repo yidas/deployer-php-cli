@@ -26,7 +26,7 @@ ob_implicit_flush();
 // print_r($argv);exit;
 
 // File input
-$file = $argv[1];
+$file = (isset($argv[1])) ? $argv[1] : NULL;
 
 // Target server group list for RSYNC
 $serverEnv = (isset($argv[2])) ? $argv[2] : 'default';
