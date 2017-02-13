@@ -110,8 +110,6 @@ try {
         //print_r($matches);
 
         die("PASS: Ignored directory\n");
-
-        continue;
     }
 
 
