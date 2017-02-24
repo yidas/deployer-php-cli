@@ -1,6 +1,6 @@
-# rsync-cli.php
+# deployer.php
 
-Linux rsync tool running by PHP script.  
+Linux rsync tool for code deployment running by PHP script.  
 These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
 
 ---
