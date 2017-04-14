@@ -82,7 +82,7 @@ try {
     /* Check for type of file / directory */
     if (!is_file($sourceFile) && !is_dir($sourceFile) ) {
 
-        throw new Exception('File input is not a file or directory');
+        throw new Exception('Source file is not a file or directory');
     }
 
     /* Check for type of link */
