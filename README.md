@@ -31,6 +31,9 @@ $config['serverList'] = [
         '110.1.2.1',
     ],
 ];
+
+// Config: Distant server username
+$config['destUsername'] = 'www-data';
 ```
 
 ---
@@ -42,6 +45,13 @@ $config['serverList'] = [
 
 - `rsyncStatic.php`  
     Rsync a specified source folder to destinate servers under the setting path, supporting filtering files from excludeList.
+    You need to do more setting for p2p directories in `rsyncStatic.php`:
+    ```
+    // Config: Source directory on local
+    $config['sourceDir'] = '/home/www/www.project.com/webroot';
+    // Config: Destination directory on local
+    $config['destDir'] = '/home/www/www.project.com/';
+    ```
 
 ---
 
