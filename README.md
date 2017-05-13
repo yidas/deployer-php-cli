@@ -20,7 +20,10 @@ you need to set up the target servers' hostname or IP into the script file:
 ```
 // Config: Distant server list
 $config['serverList'] = [
-    'default' => [],
+    'default' => [
+        '110.1.1.1',
+        '110.1.2.1',
+    ],
     'stage' => [
         '110.1.1.1',
     ],
@@ -51,12 +54,14 @@ $ ~/rsync.php file.php      // Rsync file.php to servers with same path
 $ ~/rsync.php folderA       // Rsync whole folderA to servers
 $ ~/rsync.php ./            // Rsync current whole folder
 $ ~/rsync.php ./ stage      // Rsync to servers in stage group
+$ ~/rsync.php ./ prod      // Rsync to servers in production group
 ```
 
 For `rsyncStatic.php`, you need to set project folder path into the file with source & destination directory, then you can run it:
 ```
 $ ./rsyncStatic.php           // Rsync to servers in default group
 $ ./rsyncStatic.php stage     // Rsync to servers in stage group
+$ ./rsyncStatic.php prod     // Rsync to servers in production group
 ```
 
 ---
