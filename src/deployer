@@ -1,0 +1,168 @@
+#!/usr/bin/php -q
+
+<?php
+/**
+ * Deployer CLI-PHP Tool via Rsync
+ *
+ * Rsync a specified source folder to remote servers under the folder 
+ * by setting path, supporting filtering files from excludeFiles.
+ *
+ * @version     v1.2.0
+ * @author      Nick Tsai <myintaer@gmail.com>
+ * @filesource  PHP >= 5.4 (Support 5.0 if removing Short-Array-Syntax)
+ * @param string $argv[1] Target servers group key of remoteServers
+ * @example
+ *  $ ./deployer            // Rsync to servers in default group
+ *  $ ./deployer stage      // Rsync to servers in stage group
+ *  $ ./deployer prod       // Rsync to servers in prod group
+ */
+
+
+/* Configuration */
+
+/**
+ * @var array Distant server host list
+ */
+$config['remoteServers'] = [
+    'default' => [
+        '110.1.1.1',
+        '110.1.2.1',
+    ],
+    'stage' => [
+        '110.1.1.1',
+    ],
+    'prod' => [
+        '110.1.2.1',
+    ],
+];
+
+/**
+ * @var string Remote server user
+ */
+$config['remoteUser'] = 'www-data';
+
+/**
+ * @var string Local directory for deploy 
+ */
+$config['sourceFile'] = '/home/www/www.project.com/webroot';
+
+/**
+ * @var string Remote path for synchronism
+ */
+$config['remotePath'] = '/home/www/www.project.com/';
+
+/**
+ * @var string Addition params of rsync command
+ */
+$config['rsyncParams'] = '-av --delete';
+
+/**
+ * @var array Excluded files based on sourceFile path
+ */
+$config['excludeFiles'] = [
+    'web/upload',
+    'runtime/log',
+];
+
+/**
+ * @var int Seconds waiting of each rsync connections
+ */
+$config['sleepSeconds'] = 0;
+
+/* /Configuration */
+
+
+ob_implicit_flush();
+
+// Target server group list for rsync
+$serverEnv = (isset($argv[1])) ? $argv[1] : 'default';
+
+try {
+
+    // Check for server list
+    if (!isset($config['remoteServers'][$serverEnv]) 
+        || !$config['remoteServers'][$serverEnv]) {
+        
+        throw new Exception("No server host in group: {$serverEnv}");
+    }
+
+    $sourceFile = $config['sourceFile'];
+    $remotePath = $config['remotePath'];
+
+    // File existence check
+    if (strlen(trim($sourceFile))==0) {
+
+        throw new Exception('None of file input');
+    }
+
+    // Check for type of file / directory
+    if (!is_file($sourceFile) && !is_dir($sourceFile) ) {
+
+        throw new Exception('Source file is not a file or directory');
+    }
+
+    // Check for type of link
+    if (is_link($sourceFile)) {
+
+        throw new Exception('File input is symblic link');
+    }
+        
+    // Check for syntax if is PHP
+    if ( preg_match("/\.php$/i",$sourceFile) 
+        && !preg_match("/No syntax errors detected/i", shell_exec("php -l ".$sourceFile))  ) {
+
+        throw new Exception('PHP syntax error!');
+    }
+
+    // Rsync each servers
+    foreach ($config['remoteServers'][$serverEnv] as $key => $server) {
+
+        // Info display
+        echo '/* --- Process Start ---  */'."\n";
+        echo '[Process]: '.($key+1)."\n";
+        echo '[Group  ]: '.$serverEnv."\n";
+        echo '[Server ]: '.$server."\n";
+        echo '[User   ]: '.$config['remoteUser']."\n";
+        echo '[Source ]: '.$sourceFile."\n";
+        echo '[Remote ]: '.$remotePath."\n";
+
+
+        /* Command builder */
+        
+        $cmd = 'rsync ' . $config['rsyncParams'];
+
+        // Add exclude
+        $excludeFiles = $config['excludeFiles'];
+        foreach ((array)$excludeFiles as $key => $file) {
+            $cmd .= " --exclude \"{$file}\"";
+        }
+
+        // Rsync shell command
+        $cmd = sprintf("%s %s %s@%s:%s",
+            $cmd,
+            $sourceFile,
+            $config['remoteUser'],
+            $server,
+            $remotePath 
+        );
+        
+        echo '[Command]: '.$cmd."\n";
+        
+        // Shell execution
+        $result = shell_exec($cmd);
+
+        echo '[Message]: '."\n".$result;
+        echo '/* --- /Process End ---  */'."\n";
+        echo "\r\n";
+
+        sleep($config['sleepSeconds']);
+    }
+
+    echo "\r\n";
+    
+} catch (Exception $e) {
+
+    die('ERROR:'.$e->getMessage()."\n");
+}
+
+
