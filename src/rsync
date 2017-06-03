@@ -14,11 +14,11 @@
  * @param string $argv[1] File/directory in current path for rsync
  * @param string $argv[2] (Optional) Target servers group key of remoteServers
  * @example
- *  $ ~/rsync.php file.php      // Rsync file.php to servers with same path
- *  $ ~/rsync.php folderA       // Rsync whole folderA to servers
- *  $ ~/rsync.php ./            // Rsync current whole folder
- *  $ ~/rsync.php ./ stage      // Rsync to servers in stage group
- *  $ ~/rsync.php ./ prod       // Rsync to servers in prod group
+ *  $ ~/rsync file.php      // Rsync file.php to servers with same path
+ *  $ ~/rsync folderA       // Rsync whole folderA to servers
+ *  $ ~/rsync ./            // Rsync current whole folder
+ *  $ ~/rsync ./ stage      // Rsync to servers in stage group
+ *  $ ~/rsync ./ prod       // Rsync to servers in prod group
  */
 
 
