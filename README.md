@@ -1,11 +1,13 @@
-# Deployer-CLI.php
+Deployer by PHP-CLI
+=====
 
 Linux rsync tool for code deployment running by PHP-CLI script.  
 These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
 
 ---
 
-## Demonstration
+Demonstration
+-----
 
 Deploy local project to remote servers by just executing the deployer in BASH
 
@@ -19,7 +21,8 @@ $ php ./deployer
 
 ---
 
-## Installation
+Installation
+-----
 
 Choose and copy the scripts you want from `/src` folder into Linux server, adding excute property to script files by `chmod +x`.  
 The scripts including shell script for running php at the first line:
@@ -28,7 +31,7 @@ The scripts including shell script for running php at the first line:
 ```
 You can customize it for correct php bin path in your environment, saving the file with [binary encode](#save-bin-file).
 
-#### - Servers setting:
+### Servers setting:
 
 You need to set up the target servers' hostname or IP into the script file:
 
@@ -55,7 +58,8 @@ $config['remoteUser'] = 'www-data';
 
 ---
 
-## Script files list
+Script files list
+-----
 
 - `rsync`  
      Rsync a file or a folder from current local path to destination servers with the same path automatically, the current path is base on Linux's "pwd -P" command.
@@ -71,7 +75,8 @@ $config['remoteUser'] = 'www-data';
 
 ---
 
-## How to use
+How to use
+-----
 
 For `rsync`, you can put scripts in your home directory, and cd into the pre-sync file directory:
 
@@ -92,7 +97,8 @@ $ ./deployer prod       // Rsync to servers in prod group
 
 ---
 
-## Addition usage
+Addition usage
+-----
 
 - #### Rsync without password:  
     You can put your local user's SSH public key to destination server user for authorization.
