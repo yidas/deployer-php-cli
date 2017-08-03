@@ -1,7 +1,7 @@
 Deployer *by PHP-CLI*
 =====================
 
-Linux rsync tool for code deployment running by PHP-CLI script
+Code deployment tool based on RSYNC running by PHP-CLI script
 
 These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
 
@@ -10,7 +10,7 @@ These rsync php scripts are helping developers to deploy codes from local instan
 DEMONSTRATION
 -------------
 
-Deploy local project to remote servers by just executing the deployer in BASH
+Deploy local project to remote servers by just executing the deployer in command:
 
 ```
 $ ./deployer
@@ -18,6 +18,29 @@ $ ./deployer
 Or you can call it by PHP-CLI:
 ```
 $ php ./deployer
+```
+
+The result could like be:
+```
+/* --- Git Process Start --- */
+Already up-to-date.
+/* --- Git Process End --- */
+
+/* --- Rsync Process Start --- */
+[Process]: 1
+[Group  ]: default
+[Server ]: 127.0.0.1
+[User   ]: nick_tsai
+[Source ]: /home/www/projects/deployer-php-cli
+[Remote ]: /var/www/html/projects/
+[Command]: rsync -av --delete --exclude "web/upload" --exclude "runtime/log" /home/www/projects/deployer-php-cli nick_tsai@127.0.0.1:/var/www/html/projects/
+[Message]:
+sending incremental file list
+deployer-php-cli/index.php
+
+sent 149,506 bytes  received 814 bytes  60,128.00 bytes/sec
+total size is 45,912,740  speedup is 305.43
+/* --- Rsync Process End ---  */
 ```
 
 ---
@@ -62,10 +85,10 @@ $config['remoteUser'] = 'www-data';
 SCRIPT FILES
 ------------
 
-- `rsync`  
+- **mirror**  
      Rsync a file or a folder from current local path to destination servers with the same path automatically, the current path is base on Linux's "pwd -P" command.
 
-- `deployer`  
+- **deployer**   
     Rsync a specified source folder to remote servers under the folder by setting path, supporting filtering files from excludeFiles.
     
     You need to do more setting for p2p directories in `rsyncStatic.php`:
@@ -79,14 +102,14 @@ SCRIPT FILES
 USAGE
 -----
 
-For `rsync`, you can put scripts in your home directory, and cd into the pre-sync file directory:
+For `mirror`, you can put scripts in your home directory, and cd into the pre-sync file directory:
 
 ```
-$ ~/rsync file.php      // Rsync file.php to servers with same path
-$ ~/rsync folderA       // Rsync whole folderA to servers
-$ ~/rsync ./            // Rsync current whole folder
-$ ~/rsync ./ stage      // Rsync to servers in stage group
-$ ~/rsync ./ prod       // Rsync to servers in prod group
+$ ~/mirror file.php      // Rsync file.php to servers with same path
+$ ~/mirror folderA       // Rsync whole folderA to servers
+$ ~/mirror ./            // Rsync current whole folder
+$ ~/mirror ./ stage      // Rsync to servers in stage group
+$ ~/mirror ./ prod       // Rsync to servers in prod group
 ```
 
 For `deployer`, you need to set project folder path into the file with source & destination directory, then you can run it:
