@@ -135,19 +135,19 @@ $ ~/mirror ./ prod       // Rsync to servers in prod group
 ADDITION
 --------
 
-- #### Rsync without password:  
+### Rsync without Password:  
     You can put your local user's SSH public key to destination server user for authorization.
     ```
     .ssh/id_rsa.pub >> .ssh/authorized_keys
     ```
 
-- #### Save binary encode file: <a name="save-bin-file"></a>  
+### Save Binary Encode File:  
   
     While excuting script, if you get the error like `Exception: Zend Extension ./deployer does not exist`, you may save the script file with binary encode, which could done by using `vim`:
 
-    ```
-    :set ff=unix
-    ```
+```
+:set ff=unix
+```
 
 
 
