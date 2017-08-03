@@ -2,7 +2,7 @@
 
 <?php
 /**
- * Rsync Mirror CLI-PHP Tool
+ * Mirror Tool
  *
  * Rsync a file or a folder from current local path to destination servers with 
  * the same path automatically, the current path is base on Linux's 
@@ -14,11 +14,11 @@
  * @param string $argv[1] File/directory in current path for rsync
  * @param string $argv[2] (Optional) Target servers group key of remoteServers
  * @example
- *  $ ~/rsync file.php      // Rsync file.php to servers with same path
- *  $ ~/rsync folderA       // Rsync whole folderA to servers
- *  $ ~/rsync ./            // Rsync current whole folder
- *  $ ~/rsync ./ stage      // Rsync to servers in stage group
- *  $ ~/rsync ./ prod       // Rsync to servers in prod group
+ *  $ ~/mirror file.php      // Rsync file.php to servers with same path
+ *  $ ~/mirror folderA       // Rsync whole folderA to servers
+ *  $ ~/mirror ./            // Rsync current whole folder
+ *  $ ~/mirror ./ stage      // Rsync to servers in stage group
+ *  $ ~/mirror ./ prod       // Rsync to servers in prod group
  */
 
 
