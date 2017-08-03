@@ -2,14 +2,14 @@
 
 <?php
 /**
- * Deployer CLI-PHP Tool via Rsync
+ * Deployer Tool
  *
- * Rsync a specified source folder to remote servers under the folder 
- * by setting path, supporting filtering files from excludeFiles.
+ * Rsync a project source to remote servers, supporting git and excluding files.
  *
- * @version     v1.2.0
+ * @version     v1.3.0
  * @author      Nick Tsai <myintaer@gmail.com>
  * @filesource  PHP >= 5.4 (Support 5.0 if removing Short-Array-Syntax)
+ *
  * @param string $argv[1] Target servers group key of remoteServers
  * @example
  *  $ ./deployer            // Rsync to servers in default group
@@ -69,6 +69,17 @@ $config['excludeFiles'] = [
  */
 $config['sleepSeconds'] = 0;
 
+
+/**
+ * @var bool Enabled git or not
+ */
+$config['gitEnabled'] = true;
+
+/**
+ * @var string Branch name for git pull, pull default branch if empty  
+ */
+$config['gitBranch'] = '';
+
 /* /Configuration */
 
 
@@ -107,18 +118,28 @@ try {
         throw new Exception('File input is symblic link');
     }
         
-    // Check for syntax if is PHP
-    if ( preg_match("/\.php$/i",$sourceFile) 
-        && !preg_match("/No syntax errors detected/i", shell_exec("php -l ".$sourceFile))  ) {
+    // Git process
+    if ($config['gitEnabled']) {
+        
+        echo "/* --- Git Process Start --- */\n";
+        $cmd = "cd {$config['sourceFile']};";
+        $cmd .= ($config['gitBranch']) 
+            ? "git pull origin {$config['gitBranch']}"
+            : "git pull";
 
-        throw new Exception('PHP syntax error!');
+        // Shell execution
+        $result = shell_exec($cmd);
+        echo $result;
+
+        echo "/* --- Git Process End --- */\n";
+        echo "\r\n";
     }
 
     // Rsync each servers
     foreach ($config['remoteServers'][$serverEnv] as $key => $server) {
 
         // Info display
-        echo '/* --- Process Start ---  */'."\n";
+        echo "/* --- Rsync Process Start --- */\n";
         echo '[Process]: '.($key+1)."\n";
         echo '[Group  ]: '.$serverEnv."\n";
         echo '[Server ]: '.$server."\n";
@@ -152,7 +173,7 @@ try {
         $result = shell_exec($cmd);
 
         echo '[Message]: '."\n".$result;
-        echo '/* --- /Process End ---  */'."\n";
+        echo "/* --- Rsync Process End ---  */\n";
         echo "\r\n";
 
         sleep($config['sleepSeconds']);
