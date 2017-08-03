@@ -3,6 +3,17 @@ Deployer *by PHP-CLI*
 
 Code deployment tool based on RSYNC running by PHP-CLI script
 
+FEATURES
+--------
+
+***1. Deploy to multiple servers by groups***
+
+***2. Support Git updating source project***
+
+***3. Support filter for excluding specified files***
+
+***4. Provide other tools***
+
 These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
 
 ---
@@ -85,9 +96,6 @@ $config['remoteUser'] = 'www-data';
 SCRIPT FILES
 ------------
 
-- **mirror**  
-     Rsync a file or a folder from current local path to destination servers with the same path automatically, the current path is base on Linux's "pwd -P" command.
-
 - **deployer**   
     Rsync a specified source folder to remote servers under the folder by setting path, supporting filtering files from excludeFiles.
     
@@ -96,11 +104,21 @@ SCRIPT FILES
     $config['sourceFile'] = '/home/www/www.project.com/webroot';
     $config['remotePath'] = '/home/www/www.project.com/';
     ```
+    
+- **mirror**  
+     Rsync a file or a folder from current local path to destination servers with the same path automatically, the current path is base on Linux's "pwd -P" command.
 
 ---
 
 USAGE
 -----
+
+For `deployer`, you need to set project folder path into the file with source & destination directory, then you can run it:
+```
+$ ./deployer            // Rsync to servers in default group
+$ ./deployer stage      // Rsync to servers in stage group
+$ ./deployer prod       // Rsync to servers in prod group
+```
 
 For `mirror`, you can put scripts in your home directory, and cd into the pre-sync file directory:
 
@@ -110,13 +128,6 @@ $ ~/mirror folderA       // Rsync whole folderA to servers
 $ ~/mirror ./            // Rsync current whole folder
 $ ~/mirror ./ stage      // Rsync to servers in stage group
 $ ~/mirror ./ prod       // Rsync to servers in prod group
-```
-
-For `deployer`, you need to set project folder path into the file with source & destination directory, then you can run it:
-```
-$ ./deployer            // Rsync to servers in default group
-$ ./deployer stage      // Rsync to servers in stage group
-$ ./deployer prod       // Rsync to servers in prod group
 ```
 
 ---
