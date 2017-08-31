@@ -6,7 +6,7 @@
  *
  * Rsync a project source to remote servers, supporting git and excluding files.
  *
- * @version     v1.3.0
+ * @version     v1.4.0
  * @author      Nick Tsai <myintaer@gmail.com>
  * @filesource  PHP >= 5.4 (Support 5.0 if removing Short-Array-Syntax)
  *
@@ -73,12 +73,22 @@ $config['sleepSeconds'] = 0;
 /**
  * @var bool Enabled git or not
  */
-$config['gitEnabled'] = true;
+$config['gitEnabled'] = false;
 
 /**
  * @var string Branch name for git pull, pull default branch if empty  
  */
 $config['gitBranch'] = '';
+
+/**
+ * @var bool Enabled Composer or not
+ */
+$config['composerEnabled'] = false;
+
+/**
+ * @var string Composer command line for update or install
+ */
+$config['composerCommand'] = 'composer update';
 
 /* /Configuration */
 
@@ -117,12 +127,14 @@ try {
 
         throw new Exception('File input is symblic link');
     }
+
+    // Directory locate
+    $result = shell_exec("cd {$config['sourceFile']};");
         
     // Git process
     if ($config['gitEnabled']) {
         
         echo "/* --- Git Process Start --- */\n";
-        $cmd = "cd {$config['sourceFile']};";
         $cmd .= ($config['gitBranch']) 
             ? "git pull origin {$config['gitBranch']}"
             : "git pull";
@@ -132,6 +144,20 @@ try {
         echo $result;
 
         echo "/* --- Git Process End --- */\n";
+        echo "\r\n";
+    }
+
+    // Composer process
+    if ($config['composerEnabled']) {
+        
+        echo "/* --- Composer Process Start --- */\n";
+        $cmd = $config['composerCommand'];
+
+        // Shell execution
+        $result = shell_exec($cmd);
+        echo $result;
+
+        echo "/* --- Composer Process End --- */\n";
         echo "\r\n";
     }
 
