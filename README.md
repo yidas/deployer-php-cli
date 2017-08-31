@@ -10,9 +10,11 @@ FEATURES
 
 ***2. Support Git updating for source project***
 
-***3. Support filter for excluding specified files***
+***3. Support Composer updating for source project***
 
-***4. Other useful script tools provided***
+***4. Support filter for excluding specified files***
+
+***5. Other useful script tools provided***
 
 These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
 
