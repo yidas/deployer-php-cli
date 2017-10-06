@@ -115,12 +115,17 @@ SCRIPT FILES
 USAGE
 -----
 
+### deployer
+
 For `deployer`, you need to set project folder path into the file with source & destination directory, then you can run it:
 ```
 $ ./deployer            // Rsync to servers in default group
 $ ./deployer stage      // Rsync to servers in stage group
 $ ./deployer prod       // Rsync to servers in prod group
 ```
+
+
+### mirror
 
 For `mirror`, you can put scripts in your home directory, and cd into the pre-sync file directory:
 
