@@ -134,16 +134,17 @@ try {
     // Git process
     if ($config['gitEnabled']) {
         
-        echo "/* --- Git Process Start --- */\n";
-        $cmd .= ($config['gitBranch']) 
+        echo "Processing Git...\n";
+        $cmd = ($config['gitBranch']) 
             ? "git pull origin {$config['gitBranch']}"
             : "git pull";
 
         // Shell execution
         $result = shell_exec($cmd);
-        echo $result;
 
-        echo "/* --- Git Process End --- */\n";
+        echo "/* --- Git Process Result --- */\n";
+        echo $result;
+        echo "/* -------------------------- */\n";
         echo "\r\n";
     }
 
@@ -165,13 +166,15 @@ try {
     foreach ($config['remoteServers'][$serverEnv] as $key => $server) {
 
         // Info display
-        echo "/* --- Rsync Process Start --- */\n";
+        echo "/* --- Rsync Process Info --- */\n";
         echo '[Process]: '.($key+1)."\n";
         echo '[Group  ]: '.$serverEnv."\n";
         echo '[Server ]: '.$server."\n";
         echo '[User   ]: '.$config['remoteUser']."\n";
         echo '[Source ]: '.$sourceFile."\n";
         echo '[Remote ]: '.$remotePath."\n";
+        echo "/* -------------------------- */\n";
+        echo "Processing Rsync...\n";
 
 
         /* Command builder */
@@ -198,8 +201,9 @@ try {
         // Shell execution
         $result = shell_exec($cmd);
 
-        echo '[Message]: '."\n".$result;
-        echo "/* --- Rsync Process End ---  */\n";
+        echo "/* --- Rsync Process Result --- */\n";
+        echo $result;
+        echo "/* ---------------------------- */\n";
         echo "\r\n";
 
         sleep($config['sleepSeconds']);
