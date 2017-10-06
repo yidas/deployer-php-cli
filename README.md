@@ -6,17 +6,15 @@ Code deployment tool based on RSYNC running by PHP-CLI script
 FEATURES
 --------
 
-***1. Deploy to multiple servers by groups***
+***1. Deploy to multiple servers by projects/groups***
 
-***2. Support Git updating for source project***
+***2. Git supported for source project***
 
-***3. Support Composer updating for source project***
+***3. Composer supported for source project***
 
-***4. Support filter for excluding specified files***
+***4. Filter for excluding specified files supported***
 
-***5. Other useful script tools provided***
-
-These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
+helping developers to deploy codes from local instance to remote instances.
 
 ---
 
@@ -35,25 +33,12 @@ $ php ./deployer
 
 The result could like be:
 ```
-/* --- Git Process Start --- */
-Already up-to-date.
-/* --- Git Process End --- */
+$ ./deployer
 
-/* --- Rsync Process Start --- */
-[Process]: 1
-[Group  ]: default
-[Server ]: 127.0.0.1
-[User   ]: nick_tsai
-[Source ]: /home/www/projects/deployer-php-cli
-[Remote ]: /var/www/html/projects/
-[Command]: rsync -av --delete --exclude "web/upload" --exclude "runtime/log" /home/www/projects/deployer-php-cli nick_tsai@127.0.0.1:/var/www/html/projects/
-[Message]:
-sending incremental file list
-deployer-php-cli/index.php
-
-sent 149,506 bytes  received 814 bytes  60,128.00 bytes/sec
-total size is 45,912,740  speedup is 305.43
-/* --- Rsync Process End ---  */
+Successful Excuted Task: Git
+Successful Excuted Task: Composer
+Successful Excuted Task: Deploy to 127.0.0.1
+Successful Excuted Task: Deploy
 ```
 
 ---
@@ -61,75 +46,133 @@ total size is 45,912,740  speedup is 305.43
 INSTALLATION
 ------------
 
-Choose and copy the scripts you want from `/src` folder into Linux server, adding excute property to script files by `chmod +x`.  
-The scripts including shell script for running php at the first line:
+You could see [Release](https://github.com/yidas/deployer-php-cli/releases) for picking up the package with version, for example:
+    
 ```
-#!/usr/bin/php -q
-```
-You can customize it for correct php bin path in your environment, saving the file with [binary encode](#save-bin-file).
-
-### Servers Setting:
-
-You need to set up the target servers' hostname or IP into the script file:
-
-```
-$config['remoteServers'] = [
-    'default' => [
-        '110.1.1.1',
-        '110.1.2.1',
-    ],
-    'stage' => [
-        '110.1.1.1',
-    ],
-    'prod' => [
-        '110.1.2.1',
-    ],
-];
+$ wget https://github.com/yidas/deployer-php-cli/archive/master.tar.gz -O deployer-php-cli.tar.gz
 ```
 
-Also, the remote server user need to be assigned:
+After download, uncompress the package:
 
 ```
-$config['remoteUser'] = 'www-data';
+$ tar -zxvf deployer-php-cli.tar.gz
+```
+
+Then `cd` into the folder, you could create `deployer.php` a symbol link to bin folder: 
+
+```
+$ sudo ln -s $(pwd -L)/deployer.php /usr/local/bin/deployer
+```
+
+> you could check `deployer.php` file is executable, if not you can modify excuted property by `chmod +x`.
+
+After all, you could start to set up the `config.inc.php` for deployer, and enjoy to use:
+
+```
+$ deployer
 ```
 
 ---
 
-SCRIPT FILES
-------------
+CONFIGURATION
+-------------
 
-- **deployer**   
-    Rsync a specified source folder to remote servers under the folder by setting path, supporting filtering files from excludeFiles.
-    
-    You need to do more setting for p2p directories in `rsyncStatic.php`:
-    ```
-    $config['sourceFile'] = '/home/www/www.project.com/webroot';
-    $config['remotePath'] = '/home/www/www.project.com/';
-    ```
-    
-- **mirror**  
-     Rsync a file or a folder from current local path to destination servers with the same path automatically, the current path is base on Linux's "pwd -P" command.
+### Project Setting:
+
+You need to set up the projects configuration such as servers, source and destination in `config.inc.php` file:
+
+```php
+<?php
+
+return [
+    'default' => [
+        'servers' => [
+            '127.0.0.1',
+        ],
+        'user' => [
+            'local' => '',
+            'remote' => '',
+        ],
+        'source' => '/var/www/html/project',
+        'destination' => '/var/www/html/test/',
+        'exclude' => [
+            'web/upload',
+            'runtime/log',
+        ],
+        'git' => [
+            'enabled' => true,
+            'checkout' => true,
+            'branch' => 'master',
+        ],
+        'composer' => [
+            'enabled' => true,
+            'command' => 'composer update',
+        ],
+        'rsync' => [
+            'params' => '-av --delete',
+            'sleepSeconds' => 0,
+        ],
+        'commands' => [
+            'before' => [
+                '',
+            ],
+        ],
+        'verbose' => false,
+    ]
+];
+```
+
+### Config Options
+
+|Key|Type|Description|
+|:-|:-|:-|
+|**servers**|array|Distant server host list|
+|**user**|array\|string|Local/Remote server user, auto detect current user if empty|
+|**source**|string|Local directory for deploy |
+|**destination**|string|Remote path for synchronism|
+|**exclude**|array|Excluded files based on sourceFile path|
+|verbose|bool|Enable verbose with more infomation or not|
+
+#### Git
+
+|Key|Type|Description|
+|:-|:-|:-|
+|enabled|bool|Enable git or not|
+|checkout|bool|Execute git checkout -- . before git pull  |
+|branch|string|Branch name for git pull, pull default branch if empty  |
+
+#### Composer
+
+|Key|Type|Description|
+|:-|:-|:-|
+|enabled|bool|Enable Composer or not|
+|command|string|Update command likes `composer update`|
+
+#### Rsync
+
+|Key|Type|Description|
+|:-|:-|:-|
+|params|string|Addition params of rsync command|
+|sleepSeconds|int|Seconds waiting of each rsync connections|
+
+#### Commands
+
+|Key|Type|Description|
+|:-|:-|:-|
+|init|array|Addition commands trigger at initialization|
+|before|array|Addition commands trigger before deploying|
+|after|array|Addition commands trigger after deploying|
 
 ---
 
 USAGE
 -----
 
-For `deployer`, you need to set project folder path into the file with source & destination directory, then you can run it:
 ```
-$ ./deployer            // Rsync to servers in default group
-$ ./deployer stage      // Rsync to servers in stage group
-$ ./deployer prod       // Rsync to servers in prod group
-```
-
-For `mirror`, you can put scripts in your home directory, and cd into the pre-sync file directory:
-
-```
-$ ~/mirror file.php      // Rsync file.php to servers with same path
-$ ~/mirror folderA       // Rsync whole folderA to servers
-$ ~/mirror ./            // Rsync current whole folder
-$ ~/mirror ./ stage      // Rsync to servers in stage group
-$ ~/mirror ./ prod       // Rsync to servers in prod group
+$ ./deployer                    // Deploy default project
+$ ./deployer default            // Deploy default project
+$ ./deployer my_project         // Deploy the project named `my_project` by key
+$ ./deployer deafult config     // Show configuration of default project
 ```
 
 ---
