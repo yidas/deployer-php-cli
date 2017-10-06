@@ -98,7 +98,7 @@ $config['remoteUser'] = 'www-data';
 SCRIPT FILES
 ------------
 
-- **deployer**   
+- **[deployer](#deployer)**   
     Rsync a specified source folder to remote servers under the folder by setting path, supporting filtering files from excludeFiles.
     
     You need to do more setting for p2p directories in `rsyncStatic.php`:
@@ -107,7 +107,7 @@ SCRIPT FILES
     $config['remotePath'] = '/home/www/www.project.com/';
     ```
     
-- **mirror**  
+- **[mirror](#mirror)**  
      Rsync a file or a folder from current local path to destination servers with the same path automatically, the current path is base on Linux's "pwd -P" command.
 
 ---
