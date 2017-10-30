@@ -6,7 +6,7 @@
  *
  * Rsync a project source to remote servers, supporting git and excluding files.
  *
- * @version     v1.4.0
+ * @version     v1.5.0
  * @author      Nick Tsai <myintaer@gmail.com>
  * @filesource  PHP >= 5.4 (Support 5.0 if removing Short-Array-Syntax)
  *
@@ -76,6 +76,11 @@ $config['sleepSeconds'] = 0;
 $config['gitEnabled'] = false;
 
 /**
+ * @var string Execute git checkout -- . before git pull  
+ */
+$config['gitCheckoutEnabled'] = false;
+
+/**
  * @var string Branch name for git pull, pull default branch if empty  
  */
 $config['gitBranch'] = '';
@@ -89,6 +94,15 @@ $config['composerEnabled'] = false;
  * @var string Composer command line for update or install
  */
 $config['composerCommand'] = 'composer update';
+
+/**
+ * @var string Array of commands executing before deployment
+ */
+$config['commandsBeforeDeploy'] = [
+    // 'cd /var/www/html/your-project',
+    // 'gulp minify-all',
+    // 'Minify' => 'cd /var/www/html/your-project; gulp minify-all',
+];
 
 /* /Configuration */
 
@@ -135,7 +149,10 @@ try {
     if ($config['gitEnabled']) {
         
         echo "Processing Git...\n";
-        $cmd = ($config['gitBranch']) 
+        $cmd = ($config['gitCheckoutEnabled'])
+            ? "git checkout - .;"
+            : "";
+        $cmd .= ($config['gitBranch']) 
             ? "git pull origin {$config['gitBranch']}"
             : "git pull";
 
@@ -160,6 +177,24 @@ try {
 
         echo "/* --- Composer Process End --- */\n";
         echo "\r\n";
+    }
+
+    // Commands process
+    if ($config['commandsBeforeDeploy']) {
+
+        foreach ((array)$config['commandsBeforeDeploy'] as $key => $cmd) {
+            
+            echo "/* --- Command:{$key} Process Start --- */\n";
+
+            // Format command
+            $cmd = "{$cmd};";
+            // Shell execution
+            $result = shell_exec($cmd);
+            echo $result;
+
+            echo "/* --- Command:{$key} Process End --- */\n";
+            echo "\r\n";
+        }
     }
 
     // Rsync each servers
