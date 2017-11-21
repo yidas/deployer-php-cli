@@ -73,7 +73,8 @@ wget https://raw.githubusercontent.com/yidas/deployer-php-cli/master/src/deploye
 wget https://raw.githubusercontent.com/yidas/deployer-php-cli/master/src/mirror
 ```
 
-Otherwise, you could choose and copy the scripts you want from `/src` folder into Linux server, adding excute property to script files by `chmod +x`.  
+After download, you could add excute property to that file by `chmod +x`.  
+
 The scripts including shell script for running php at the first line:
 ```
 #!/usr/bin/php -q
