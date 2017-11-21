@@ -61,7 +61,19 @@ total size is 45,912,740  speedup is 305.43
 INSTALLATION
 ------------
 
-Choose and copy the scripts you want from `/src` folder into Linux server, adding excute property to script files by `chmod +x`.  
+- **[deployer](#deployer)**   
+    
+    ```
+    wget https://raw.githubusercontent.com/yidas/deployer-php-cli/master/src/deployer
+    ```
+    
+- **[mirror](#mirror)**  
+     
+    ```
+    wget https://raw.githubusercontent.com/yidas/deployer-php-cli/master/src/mirror
+    ```
+
+Otherwise, you could choose and copy the scripts you want from `/src` folder into Linux server, adding excute property to script files by `chmod +x`.  
 The scripts including shell script for running php at the first line:
 ```
 #!/usr/bin/php -q
