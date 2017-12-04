@@ -14,8 +14,6 @@ FEATURES
 
 ***4. Support filter for excluding specified files***
 
-***5. Other useful script tools provided***
-
 These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
 
 ---
