@@ -8,11 +8,11 @@ FEATURES
 
 ***1. Deploy to multiple servers by groups***
 
-***2. Support Git updating for source project***
+***2. Git supported for source project***
 
-***3. Support Composer updating for source project***
+***3. Composer supported for source project***
 
-***4. Support filter for excluding specified files***
+***4. Filter for excluding specified files supported***
 
 These rsync php scripts are helping developers to deploy codes from local instance to remote instances.
 
