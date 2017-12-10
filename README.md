@@ -79,6 +79,11 @@ The scripts including shell script for running php at the first line:
 ```
 You can customize it for correct php bin path in your environment, saving the file with [binary encode](#save-bin-file).
 
+---
+
+CONFIGURATION
+-------------
+
 ### Servers Setting:
 
 You need to set up the target servers' hostname or IP into the script file:
@@ -103,6 +108,24 @@ Also, the remote server user need to be assigned:
 ```
 $config['remoteUser'] = 'www-data';
 ```
+
+### Config Options
+
+|Key|Description|
+|:-|:-|
+|**remoteServers**|Distant server host list|
+|**remoteUser**|Remote server user|
+|**sourceFile**|Local directory for deploy |
+|**remotePath**|Remote path for synchronism|
+|rsyncParams|Addition params of rsync command|
+|**excludeFiles**|Excluded files based on sourceFile path|
+|sleepSeconds|Seconds waiting of each rsync connections|
+|gitEnabled|Enabled git or not|
+|gitCheckoutEnabled|Execute git checkout -- . before git pull  |
+|gitBranch|Branch name for git pull, pull default branch if empty  |
+|composerEnabled|Enabled Composer or not|
+|composerCommand|Composer command line for update or install|
+|commandsBeforeDeploy|Array of commands executing before deployment|
 
 ---
 
