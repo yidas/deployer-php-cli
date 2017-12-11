@@ -127,14 +127,14 @@ class Deployer
         // Git process
         
         $this->_verbose("/* --- Git Process Start --- */");
-        $cmd = ($config['checkout'])
-            ? "git checkout -- .;"
-            : "";
-        $cmd .= ($config['branch']) 
-            ? "git pull origin {$config['branch']};"
-            : "git pull;";
-
-        // Shell execution
+        // Git Checkout
+        if ($config['checkout']) {
+            $result = $this->_cmd("git checkout -- .", true);
+        }
+        // Git pull
+        $cmd = ($config['branch']) 
+            ? "git pull origin {$config['branch']}"
+            : "git pull";
         $result = $this->_cmd($cmd, true);
 
         $this->_verbose("/* --- Git Process Result --- */");
@@ -342,11 +342,21 @@ class Deployer
      * @param string $cmd
      * @return mixed Response
      */
-    private function _cmd($cmd, $cdSource=false)
+    private function _cmd($cmd, $cdSource=false, $output=false)
     {
+        // Clear rtrim
+        $cmd = rtrim($cmd, ';');
+        
         if ($cdSource) { 
             $cmd = "cd {$this->_config['source']};{$cmd}";
         }
+
+        if (!$output) {
+            $cmd .= " 2>&1";
+        }
+
+        // End cmd
+        $cmd = "{$cmd};";
 
         return shell_exec($cmd);
     }
