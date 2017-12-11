@@ -19,64 +19,13 @@
  *  $ ./deployer deafult config     // Show configuration of default project
  */
 
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
-
-/* Config List Handler */
-$configList = require __DIR__. '/config.inc.php';
-// print_r($configList);
-
-$projectKey = (isset($argv[1])) ? $argv[1] : 'default';
-$secondOption = (isset($argv[2])) ? $argv[2] : NULL;
-
-try {
-   
-    // Check project config
-    if (!isset($configList[$projectKey])) {
-
-        if (is_array($configList) && $configList) {
-
-            echo "Your project list in configuration:\n";
-            foreach ($configList as $key => $project) {
-                echo "{$key}\n";
-            }
-            exit;
-
-        } else {
-            
-            throw new Exception("Config project not found: {$projectKey}", 400);
-        }
-    }
-
-    $config = $configList[$projectKey];
-
-    $deployer = new Deployer($config);
-
-    /* Function Option */
-    if ($secondOption) {
-        switch ($secondOption) {
-            case 'config':
-            case 'configuration':
-            case 'show':
-                print_r($deployer->getConfig());
-                exit;
-                break;
-        }
-    }
-
-    $deployer->run();
-   
-
-} catch (Exception $e) {
-
-    die("ERROR:{$e->getMessage()}\n");
-}
-
 /**
  * Deployer Core
  */
 class Deployer
 {
+    use ShellConsole;
+    
     private $_config;
     
     function __construct($config)
@@ -336,6 +285,16 @@ class Deployer
         }
     }
 
+    /**
+     * Response
+     * 
+     * @param string $string
+     */
+    private function _done($string)
+    {
+        $this->_print("Successful Excuted Task: {$string}");
+    }
+
     /** 
      * Command (Shell as default)
      * 
@@ -358,38 +317,7 @@ class Deployer
         // End cmd
         $cmd = "{$cmd};";
 
-        return shell_exec($cmd);
-    }
-
-    /** 
-     * Command (Shell as default)
-     * 
-     * @param string $cmd
-     * @return mixed Response
-     */
-    private function _getUser()
-    {
-        return trim(shell_exec('echo $USER;'));
-    }
-
-    /**
-     * Response
-     * 
-     * @param string $string
-     */
-    private function _print($string)
-    {
-        echo "{$string}\n";
-    }
-
-    /**
-     * Response
-     * 
-     * @param string $string
-     */
-    private function _done($string)
-    {
-        $this->_print("Successful Excuted Task: {$string}");
+        return $this->_exec($cmd);
     }
 
     /**
@@ -403,4 +331,97 @@ class Deployer
             $this->_print($string);
         }
     }
+}
+
+/**
+ * Shell Console
+ */
+trait ShellConsole
+{
+    /** 
+     * Command
+     * 
+     * @param string $cmd
+     * @return mixed Response
+     */
+    private function _exec($cmd)
+    {
+        return shell_exec($cmd);
+    }
+    
+    /** 
+     * Get username
+     * 
+     * @return string User
+     */
+    private function _getUser()
+    {
+        return trim($this->_exec('echo $USER;'));
+    }
+
+    /**
+     * Response
+     * 
+     * @param string $string
+     */
+    private function _print($string)
+    {
+        echo "{$string}\n";
+    }
+}
+
+
+/* Bootstrap */
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+/* Config List Handler */
+$configList = require __DIR__. '/config.inc.php';
+// print_r($configList);
+
+$projectKey = (isset($argv[1])) ? $argv[1] : 'default';
+$secondOption = (isset($argv[2])) ? $argv[2] : NULL;
+
+try {
+   
+    // Check project config
+    if (!isset($configList[$projectKey])) {
+
+        if (is_array($configList) && $configList) {
+
+            echo "Your project list in configuration:\n";
+            foreach ($configList as $key => $project) {
+                echo "{$key}\n";
+            }
+            exit;
+
+        } else {
+            
+            throw new Exception("Config project not found: {$projectKey}", 400);
+        }
+    }
+
+    $config = $configList[$projectKey];
+
+    $deployer = new Deployer($config);
+
+    /* Function Option */
+    if ($secondOption) {
+        switch ($secondOption) {
+            case 'config':
+            case 'configuration':
+            case 'show':
+                print_r($deployer->getConfig());
+                exit;
+                break;
+        }
+    }
+
+    $deployer->run();
+   
+
+} catch (Exception $e) {
+
+    die("ERROR:{$e->getMessage()}\n");
 }
