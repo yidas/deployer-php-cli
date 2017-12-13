@@ -46,19 +46,21 @@ Successful Excuted Task: Deploy
 INSTALLATION
 ------------
 
-- **[deployer](#deployer)**   
+You could see [Release](https://github.com/yidas/deployer-php-cli/releases) for picking up the package with version, for example:
     
 ```
-wget https://raw.githubusercontent.com/yidas/deployer-php-cli/master/src/deployer
+$ wget https://github.com/yidas/deployer-php-cli/archive/master.tar.gz -O deployer-php-cli.tar.gz
 ```
 
-After download, you could add file `deployer.php` with excuted property by `chmod +x`.  
+After download, uncompress the package:
 
-The scripts including shell script for running php at the first line:
 ```
-#!/usr/bin/php -q
+$ tar -zxvf deployer-php-cli.tar.gz
 ```
-You can customize it for correct php bin path in your environment, saving the file with [binary encode](#save-bin-file).
+
+Then `cd` into the folder, you could change `deployer.php` file with excuted property by `chmod +x`.  
+
+After all, you could start to set up the `config.inc.php` for deployer.
 
 ---
 
