@@ -113,7 +113,7 @@ return [
 ### Config Options
 
 |Key|Type|Description|
-|:-|:-|
+|:-|:-|:-|
 |**servers**|array|Distant server host list|
 |**user**|array\|string|Local/Remote server user, auto detect current user if empty|
 |**source**|string|Local directory for deploy |
@@ -124,7 +124,7 @@ return [
 #### Git
 
 |Key|Type|Description|
-|:-|:-|
+|:-|:-|:-|
 |enabled|bool|Enable git or not|
 |checkout|bool|Execute git checkout -- . before git pull  |
 |branch|string|Branch name for git pull, pull default branch if empty  |
@@ -132,21 +132,21 @@ return [
 #### Composer
 
 |Key|Type|Description|
-|:-|:-|
+|:-|:-|:-|
 |enabled|bool|Enable Composer or not|
 |command|string|Update command likes `composer update`|
 
 #### Rsync
 
 |Key|Type|Description|
-|:-|:-|
+|:-|:-|:-|
 |params|string|Addition params of rsync command|
 |sleepSeconds|int|Seconds waiting of each rsync connections|
 
 #### Commands
 
 |Key|Type|Description|
-|:-|:-|
+|:-|:-|:-|
 |init|array|Addition commands trigger at initialization|
 |before|array|Addition commands trigger before deploying|
 |after|array|Addition commands trigger after deploying|
