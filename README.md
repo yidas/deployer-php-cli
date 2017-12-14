@@ -26,8 +26,9 @@ Deploy local project to remote servers by just executing the deployer in command
 ```
 $ deployer
 ```
-Or you can call the origin bootstrap by PHP-CLI:
+Or you can call the origin bootstrap:
 ```
+$ ./deployer.php
 $ php ./deployer.php
 ```
 
@@ -169,10 +170,10 @@ USAGE
 -----
 
 ```
-$ ./deployer                    // Deploy default project
-$ ./deployer default            // Deploy default project
-$ ./deployer my_project         // Deploy the project named `my_project` by key
-$ ./deployer deafult config     // Show configuration of default project
+$ deployer                    // Deploy default project
+$ deployer default            // Deploy default project
+$ deployer my_project         // Deploy the project named `my_project` by key
+$ deployer deafult config     // Show configuration of default project
 ```
 
 ---
