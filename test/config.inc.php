@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @see https://github.com/yidas/deployer-php-cli
- */
-
 return [
     'default' => [
         'servers' => [
@@ -13,8 +9,8 @@ return [
             'local' => '',
             'remote' => '',
         ],
-        'source' => '/var/www/html/project',
-        'destination' => '/var/www/html/test/',
+        'source' => __DIR__,
+        'destination' => __DIR__,
         'exclude' => [
             '.git',
         ],
@@ -36,6 +32,6 @@ return [
                 '',
             ],
         ],
-        'verbose' => false,
+        'verbose' => true,
     ],
 ];

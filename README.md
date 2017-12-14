@@ -3,37 +3,42 @@ Deployer *by PHP-CLI*
 
 Code deployment tool based on RSYNC running by PHP-CLI script
 
+[![Latest Stable Version](https://poser.pugx.org/yidas/deployer-php-cli/v/stable?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
+[![Latest Unstable Version](https://poser.pugx.org/yidas/deployer-php-cli/v/unstable?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
+[![License](https://poser.pugx.org/yidas/deployer-php-cli/license?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
+
 FEATURES
 --------
 
-***1. Deploy to multiple servers by projects/groups***
+- *Deploy to **multiple** servers by **projects/groups***
 
-***2. Git supported for source project***
+- ***Git support** for source project*
 
-***3. Composer supported for source project***
+- ***Composer support** for source project*
 
-***4. Filter for excluding specified files supported***
+- ***Filter** for excluding specified files support*
 
-helping developers to deploy codes from local instance to remote instances.
+Helping developers to deploy codes from local instance to remote instances.
 
 ---
 
 DEMONSTRATION
 -------------
 
-Deploy local project to remote servers by just executing the deployer in command:
+Deploy local project to remote servers by just executing the deployer in command after installation:
 
 ```
-$ ./deployer
+$ deployer
 ```
-Or you can call it by PHP-CLI:
+Or you can call the origin bootstrap:
 ```
-$ php ./deployer
+$ ./deployer.php
+$ php ./deployer.php
 ```
 
 The result could like be:
 ```
-$ ./deployer
+$ deployer
 
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
@@ -61,7 +66,7 @@ $ tar -zxvf deployer-php-cli.tar.gz
 Then `cd` into the folder, you could create `deployer.php` a symbol link to bin folder: 
 
 ```
-$ sudo ln -s $(pwd -L)/deployer.php /usr/local/bin/deployer
+$ sudo ln -s $(pwd -L)/deployer.php /usr/bin/deployer
 ```
 
 > you could check `deployer.php` file is executable, if not you can modify excuted property by `chmod +x`.
@@ -128,7 +133,7 @@ return [
 |:-|:-|:-|
 |**servers**|array|Distant server host list|
 |**user**|array\|string|Local/Remote server user, auto detect current user if empty|
-|**source**|string|Local directory for deploy |
+|**source**|string|Local directory for deploy, use `/` as end means `*` |
 |**destination**|string|Remote path for synchronism|
 |**exclude**|array|Excluded files based on sourceFile path|
 |verbose|bool|Enable verbose with more infomation or not|
@@ -163,16 +168,32 @@ return [
 |before|array|Addition commands trigger before deploying|
 |after|array|Addition commands trigger after deploying|
 
+### Example
+
+* Copy `project` directory form `/var/www/html/` to destination under `/var/www/html/test/`:
+
+```php
+'source' => '/var/www/html/project',
+'destination' => '/var/www/html/test/',
+```
+
+* Copy all files (`*`) form `/var/www/html/project/` to destination under `/var/www/html/test/`:
+
+```php
+'source' => '/var/www/html/project/',
+'destination' => '/var/www/html/test/',
+```
+
 ---
 
 USAGE
 -----
 
 ```
-$ ./deployer                    // Deploy default project
-$ ./deployer default            // Deploy default project
-$ ./deployer my_project         // Deploy the project named `my_project` by key
-$ ./deployer deafult config     // Show configuration of default project
+$ deployer                    // Deploy default project
+$ deployer default            // Deploy default project
+$ deployer my_project         // Deploy the project named `my_project` by key
+$ deployer deafult config     // Show configuration of default project
 ```
 
 ---

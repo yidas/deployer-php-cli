@@ -1,0 +1,27 @@
+#!/usr/bin/php -q
+
+<?php
+/**
+ * Test Bootstrap
+ *
+ * @since     1.1.0
+ */
+
+// App loader
+require __DIR__. '/../src/App.php';
+
+
+/* Bootstrap */
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+/* Config List Handler */
+$configList = require __DIR__. '/config.inc.php';
+// print_r($configList);
+
+$argv = isset($argv) ? $argv : [];
+
+$app = new App;
+$app->run($configList, $argv);
+

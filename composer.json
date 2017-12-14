@@ -1,0 +1,13 @@
+{
+    "name": "yidas/deployer-php-cli",
+    "description": "Code deployment tool based on RSYNC running by PHP-CLI script",
+    "keywords": ["deployment", "continuous-integration", "rsync" ,"php-cli"],
+    "homepage": "https://github.com/yidas/deployer-php-cli",
+    "type": "project",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/yidas/deployer-php-cli/issues",
+        "source": "https://github.com/yidas/deployer-php-cli"
+    },
+    "minimum-stability": "stable"
+}
