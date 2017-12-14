@@ -21,19 +21,19 @@ helping developers to deploy codes from local instance to remote instances.
 DEMONSTRATION
 -------------
 
-Deploy local project to remote servers by just executing the deployer in command:
+Deploy local project to remote servers by just executing the deployer in command after installation:
 
 ```
-$ ./deployer
+$ deployer
 ```
-Or you can call it by PHP-CLI:
+Or you can call the origin bootstrap by PHP-CLI:
 ```
-$ php ./deployer
+$ php ./deployer.php
 ```
 
 The result could like be:
 ```
-$ ./deployer
+$ deployer
 
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
