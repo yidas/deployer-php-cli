@@ -6,13 +6,13 @@ Code deployment tool based on RSYNC running by PHP-CLI script
 FEATURES
 --------
 
-***1. Deploy to multiple servers by projects/groups***
+*1. Deploy to **multiple** servers by **projects/groups***
 
-***2. Git supported for source project***
+*2. **Git support** for source project*
 
-***3. Composer supported for source project***
+*3. **Composer support** for source project*
 
-***4. Filter for excluding specified files supported***
+*4. **Filter** for excluding specified files support*
 
 helping developers to deploy codes from local instance to remote instances.
 
