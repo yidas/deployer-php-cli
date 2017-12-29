@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @see https://github.com/yidas/deployer-php-cli
+ */
+
 return [
     'default' => [
         'servers' => [
