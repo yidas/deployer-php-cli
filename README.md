@@ -63,6 +63,9 @@ Then `cd` into the folder, you could create `deployer.php` a symbol link to bin 
 
 ```
 $ sudo ln -s $(pwd -L)/deployer.php /usr/local/bin/deployer
+
+# For root
+$ sudo ln -s $(pwd -L)/deployer.php /usr/bin/deployer
 ```
 
 > you could check `deployer.php` file is executable, if not you can modify excuted property by `chmod +x`.
