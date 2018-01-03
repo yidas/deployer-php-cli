@@ -16,8 +16,7 @@ return [
         'source' => '/var/www/html/project',
         'destination' => '/var/www/html/test/',
         'exclude' => [
-            'web/upload',
-            'runtime/log',
+            '.git',
         ],
         'git' => [
             'enabled' => true,
