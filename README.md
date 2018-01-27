@@ -14,7 +14,7 @@ FEATURES
 
 - ***Filter** for excluding specified files support*
 
-helping developers to deploy codes from local instance to remote instances.
+Helping developers to deploy codes from local instance to remote instances.
 
 ---
 
