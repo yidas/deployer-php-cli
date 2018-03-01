@@ -4,19 +4,8 @@
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
- * @since       1.0.0
+ * @since       1.2.0
  * @author      Nick Tsai <myintaer@gmail.com>
- * @filesource  PHP 5.4.0+
- * @filesource  RSYNC commander
- * @filesource  Git commander
- * @filesource  Composer commander
- *
- * @param string $argv[1] Project
- * @example
- *  $ ./deployer                    // Deploy default project
- *  $ ./deployer default            // Deploy default project
- *  $ ./deployer my_project         // Deploy the project named `my_project` by key
- *  $ ./deployer deafult config     // Show configuration of default project
  */
 
 /**
@@ -46,6 +35,9 @@ class Deployer
         if ($config['user']['local'] && $config['user']['local']!=$this->_getUser()) {
             $result = $this->_cmd("su {$config['user']['local']};");
         }
+
+        // cd into source directory
+        $this->_cmd("cd {$this->_config['source']};");
         
         $this->runCommands('init');
         $this->runGit();
@@ -76,18 +68,31 @@ class Deployer
         // Git process
         
         $this->_verbose("/* --- Git Process Start --- */");
+
+        // Path
+        if (isset($config['path'])) {
+            $this->_cmd("cd {$config['path']}", true);
+        }
+
         // Git Checkout
         if ($config['checkout']) {
-            $result = $this->_cmd("git checkout -- .", true);
+            $result = $this->_cmd("git checkout -- .");
         }
         // Git pull
         $cmd = ($config['branch']) 
             ? "git pull origin {$config['branch']}"
             : "git pull";
-        $result = $this->_cmd($cmd, true);  
-
-        $this->_verbose("/* --- Git Process Result --- */");
+        $result = $this->_cmd($cmd);  
+        $this->_verbose("/* --- Git Process Pull --- */");
         $this->_verbose($result);
+
+        // Git reset commit
+        if ($config['reset']) {
+            $result = $this->_cmd("git reset --hard {$config['reset']}");
+            $this->_verbose("/* --- Git Process Reset Commit --- */");
+            $this->_verbose($result);
+        } 
+
         $this->_verbose("/* --- Git Process End --- */");
 
         // Check error
@@ -120,10 +125,15 @@ class Deployer
         
         // Composer process
         $this->_verbose("/* --- Composer Process Start --- */");
+
+        // Path
+        if (isset($config['path'])) {
+            $this->_cmd("cd {$config['path']}", true);
+        }
         
         $cmd = $config['command'];
         // Shell execution
-        $result = $this->_cmd($cmd, true);
+        $result = $this->_cmd($cmd, false);
         $this->_verbose($result);
 
         $this->_verbose("/* --- Composer Process Result --- */");

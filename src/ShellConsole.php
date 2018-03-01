@@ -2,6 +2,8 @@
 
 /**
  * Shell Console
+ * 
+ * @author  Nick Tsai <myintaer@gmail.com>
  */
 trait ShellConsole
 {

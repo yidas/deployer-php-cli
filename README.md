@@ -22,6 +22,34 @@ Helping developers to deploy codes from local instance to remote instances.
 
 ---
 
+OUTLINE
+-------
+
+* [Demonstration](#demonstration)
+
+* [Requirements](#requirements)
+
+* [Installation](#installation)
+  - [Download](#download)
+  - [Make Command](#make-command)
+
+* [Configuration](#configuration)
+  - [Project Setting](#project-setting)
+  - [Config Options](#config-options)
+  - [Example](#example)
+
+* [Usage](#usage)
+  - [Interactive Project Select](#interactive-project-select)
+  - [Non-Interactive Project Select](#non-interactive-project-select)
+  - [Skip Flows](#skip-flows)
+  - [Revert & Reset back](#revert--reset-back)
+
+* [Additions](#additions)
+  - [Rsync without Password](#rsync-without-password)
+  - [Save Binary Encode File](#save-binary-encode-file)
+  
+---
+
 DEMONSTRATION
 -------------
 
@@ -30,26 +58,49 @@ Deploy local project to remote servers by just executing the deployer in command
 ```
 $ deployer
 ```
-Or you can call the origin bootstrap:
+Or you can call the original bootstrap:
 ```
-$ ./deployer.php
-$ php ./deployer.php
+$ ./deployer
+$ php ./deployer
 ```
 
 The result could like be:
 ```
-$ deployer
+$ deployer --project="project1"
 
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
-Successful Excuted Task: Deploy to 127.0.0.1
+Successful Excuted Task: Deploy to 127.0.0.11
+Successful Excuted Task: Deploy to 127.0.0.12
 Successful Excuted Task: Deploy
 ```
 
 ---
 
+REQUIREMENTS
+------------
+
+This library requires the following:
+
+- PHP(CLI) 5.4.0+
+- RSYNC
+
+---
+
 INSTALLATION
 ------------
+
+### Download
+
+You could choose a install way between Composer or Wget:
+
+#### Composer Installation
+
+```
+composer create-project yidas/deployer-php-cli
+```
+
+#### Wget Installation
 
 You could see [Release](https://github.com/yidas/deployer-php-cli/releases) for picking up the package with version, for example:
     
@@ -63,7 +114,9 @@ After download, uncompress the package:
 $ tar -zxvf deployer-php-cli.tar.gz
 ```
 
-Then `cd` into the folder, you could create `deployer.php` a symbol link to bin folder: 
+### Make Command
+
+To make a command for deployer, `cd` into the folder, then create `deployer.php` a symbol link to bin folder: 
 
 ```
 $ sudo ln -s $(pwd -L)/deployer.php /usr/bin/deployer
@@ -127,7 +180,7 @@ return [
 ];
 ```
 
-### Config Options
+### Config Options:
 
 |Key|Type|Description|
 |:-|:-|:-|
@@ -190,16 +243,67 @@ USAGE
 -----
 
 ```
-$ deployer                    // Deploy default project
-$ deployer default            // Deploy default project
-$ deployer my_project         // Deploy the project named `my_project` by key
-$ deployer deafult config     // Show configuration of default project
+Usage:
+  deployer [options] [arguments]
+  ./deployer [options] [arguments]
+
+Options:
+      --help            Display this help message
+      --version         Show the current version of the application
+  -p, --project         Project key by configuration for deployment
+      --config          Show the seleted project configuration
+      --configuration
+      --skip-git        Force to skip Git process
+      --skip-composer   Force to skip Composer process
+      --git-reset       Git reset to given commit with --hard option
+  -v, --verbose         Increase the verbosity of messages
 ```
+
+### Interactive Project Select
+
+```
+$ deployer
+
+Your available projects in configuration:
+  [0] default
+  [1] project1
+
+  Please select a project [number or project, Ctrl+C to quit]:default
+
+Successful Excuted Task: Git
+Successful Excuted Task: Composer
+Successful Excuted Task: Deploy to 127.0.0.11
+Successful Excuted Task: Deploy
+```
+
+### Non-Interactive Project Select
+
+```
+$ deployer --project="default"
+```
+
+### Skip Flows
+
+You could force to skip flows such as Git and Composer even when you enable then in config.
+
+```
+$ deployer --project="default" --skip-git --skip-composer
+```
+
+### Revert & Reset back
+
+You could reset git to specified commit by using `--git-reset` option when you get trouble after newest release.
+
+```
+$ deployer --project="default" --git-reset="79616d"
+```
+
+> This option is same as executing `git reset --hard 79616d` in source project.
 
 ---
 
-ADDITION
---------
+ADDITIONS
+---------
 
 ### Rsync without Password:  
 
