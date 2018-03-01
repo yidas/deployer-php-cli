@@ -51,6 +51,16 @@ Successful Excuted Task: Deploy
 INSTALLATION
 ------------
 
+### Download
+
+#### Composer Installation
+
+```
+composer create-project yidas/deployer-php-cli
+```
+
+#### Wget Installation
+
 You could see [Release](https://github.com/yidas/deployer-php-cli/releases) for picking up the package with version, for example:
     
 ```
@@ -63,7 +73,9 @@ After download, uncompress the package:
 $ tar -zxvf deployer-php-cli.tar.gz
 ```
 
-Then `cd` into the folder, you could create `deployer.php` a symbol link to bin folder: 
+### Make Command
+
+To make a command for deployer, `cd` into the folder, then create `deployer.php` a symbol link to bin folder: 
 
 ```
 $ sudo ln -s $(pwd -L)/deployer.php /usr/bin/deployer
