@@ -53,6 +53,8 @@ INSTALLATION
 
 ### Download
 
+You could choose a install way between Composer or Wget:
+
 #### Composer Installation
 
 ```
