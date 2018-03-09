@@ -48,6 +48,15 @@ Successful Excuted Task: Deploy
 
 ---
 
+REQUIREMENTS
+------------
+
+This library requires the following:
+
+- PHP 5.4.0+
+
+---
+
 INSTALLATION
 ------------
 
