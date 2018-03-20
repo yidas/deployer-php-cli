@@ -11,6 +11,10 @@
  * @param   string options
  * @param   array longopts
  * @param   int optind
+ * @example
+ *  $getOpt = new GetOpt('h:v', ['host:', 'verbose']);
+ *  $hostname = $getOpt->get(['project', 'p']);     // String or null
+ *  $debugOn = $getOpt->has(['verbose', 'v']);      // Bool
  */
 class GetOpt
 {

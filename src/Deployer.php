@@ -46,6 +46,9 @@ class Deployer
         if ($config['user']['local'] && $config['user']['local']!=$this->_getUser()) {
             $result = $this->_cmd("su {$config['user']['local']};");
         }
+
+        // cd into source directory
+        $this->_cmd("cd {$this->_config['source']};");
         
         $this->runCommands('init');
         $this->runGit();
@@ -76,21 +79,27 @@ class Deployer
         // Git process
         
         $this->_verbose("/* --- Git Process Start --- */");
+
+        // Path
+        if (isset($config['path'])) {
+            $this->_cmd("cd {$config['path']}", true);
+        }
+
         // Git Checkout
         if ($config['checkout']) {
-            $result = $this->_cmd("git checkout -- .", true);
+            $result = $this->_cmd("git checkout -- .");
         }
         // Git pull
         $cmd = ($config['branch']) 
             ? "git pull origin {$config['branch']}"
             : "git pull";
-        $result = $this->_cmd($cmd, true);  
+        $result = $this->_cmd($cmd);  
         $this->_verbose("/* --- Git Process Pull --- */");
         $this->_verbose($result);
 
         // Git reset commit
         if ($config['commit']) {
-            $result = $this->_cmd("git reset --hard {$config['commit']}", true);
+            $result = $this->_cmd("git reset --hard {$config['commit']}");
             $this->_verbose("/* --- Git Process Reset Commit --- */");
             $this->_verbose($result);
         } 
@@ -127,10 +136,15 @@ class Deployer
         
         // Composer process
         $this->_verbose("/* --- Composer Process Start --- */");
+
+        // Path
+        if (isset($config['path'])) {
+            $this->_cmd("cd {$config['path']}", true);
+        }
         
         $cmd = $config['command'];
         // Shell execution
-        $result = $this->_cmd($cmd, true);
+        $result = $this->_cmd($cmd, false);
         $this->_verbose($result);
 
         $this->_verbose("/* --- Composer Process Result --- */");

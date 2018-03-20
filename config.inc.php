@@ -20,11 +20,13 @@ return [
         ],
         'git' => [
             'enabled' => true,
+            'path' => './',
             'checkout' => true,
             'branch' => 'master',
         ],
         'composer' => [
             'enabled' => true,
+            'path' => './',
             'command' => 'composer update',
         ],
         'rsync' => [

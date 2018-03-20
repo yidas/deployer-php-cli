@@ -35,16 +35,29 @@ class App
             "verbose",
             "config",
             "configuration",
+            "help",
         );
 
         try {
 
+            // GetOpt
             $getOpt = new GetOpt($shortopts, $longopts);
             // var_dump($getOpt->getOptions());
     
             $projectKey = $getOpt->get(['project', 'p']);
             $showConfig = $getOpt->has(['config', 'configuration']);
-            // var_dump($skipGit);exit;
+            $showHelp = $getOpt->has(['help']);
+
+            /**
+             * Exception before App 
+             */
+            if ($showHelp) {
+                // Load view
+                $text = require __DIR__. '/views/help.php';
+                echo $text;
+                echo "\r\n";
+                return;
+            }
     
             // Check project config
             if (!isset($configList[$projectKey])) {
@@ -89,7 +102,9 @@ class App
             // Initial Deployer
             $deployer = new Deployer($config);
 
-            /* Exception function */
+            /**
+             * Exception before Deployer run 
+             */
             if ($showConfig) {
                 echo "The `{$projectKey}` project's configuration is below:\n";
                 print_r($deployer->getConfig());
