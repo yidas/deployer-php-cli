@@ -30,7 +30,7 @@ Deploy local project to remote servers by just executing the deployer in command
 ```
 $ deployer
 ```
-Or you can call the origin bootstrap:
+Or you can call the original bootstrap:
 ```
 $ ./deployer.php
 $ php ./deployer.php
@@ -38,7 +38,7 @@ $ php ./deployer.php
 
 The result could like be:
 ```
-$ deployer
+$ deployer --project="project1"
 
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
@@ -53,7 +53,8 @@ REQUIREMENTS
 
 This library requires the following:
 
-- PHP 5.4.0+
+- PHP(CLI) 5.4.0+
+- RSYNC
 
 ---
 
@@ -213,11 +214,60 @@ USAGE
 -----
 
 ```
-$ deployer                    // Deploy default project
-$ deployer default            // Deploy default project
-$ deployer my_project         // Deploy the project named `my_project` by key
-$ deployer deafult config     // Show configuration of default project
+Usage:
+  deployer [options] [arguments]
+  ./deployer.php [options] [arguments]
+
+Options:
+      --help            Display this help message
+  -p, --project         Project key by configuration for deployment
+      --config          Show the seleted project configuration
+      --configuration
+      --skip-git        Force to skip Git process
+      --skip-composer   Force to skip Composer process
+      --git-commit      Git reset to given commit with --hard option
+  -v, --verbose         Increase the verbosity of messages
 ```
+
+### Interactive Project Select.
+
+```
+$ deployer
+
+Your available projects in configuration:
+default
+
+Please enter the project:default
+
+Successful Excuted Task: Git
+Successful Excuted Task: Composer
+Successful Excuted Task: Deploy to 127.0.0.1
+Successful Excuted Task: Deploy
+```
+
+### Non-Interactive Project Select.
+
+```
+$ deployer --project="default"
+```
+
+### Skip Flows
+
+You could force to skip flows such as Git and Composer even when you enable then in config.
+
+```
+$ deployer --project="default" --skip-git --skip-composer
+```
+
+### Revert & Reset back
+
+You could reset git to specified commit when you get trouble after newest release.
+
+```
+$ deployer --project="default" --git-commit="79616d"
+```
+
+> This option is same as executing `git reset --hard 79616d` in source project.
 
 ---
 
