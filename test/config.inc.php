@@ -32,6 +32,6 @@ return [
                 '',
             ],
         ],
-        'verbose' => true,
+        'verbose' => false,
     ],
 ];

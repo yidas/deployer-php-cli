@@ -85,9 +85,16 @@ class Deployer
             ? "git pull origin {$config['branch']}"
             : "git pull";
         $result = $this->_cmd($cmd, true);  
-
-        $this->_verbose("/* --- Git Process Result --- */");
+        $this->_verbose("/* --- Git Process Pull --- */");
         $this->_verbose($result);
+
+        // Git reset commit
+        if ($config['commit']) {
+            $result = $this->_cmd("git reset --hard {$config['commit']}", true);
+            $this->_verbose("/* --- Git Process Reset Commit --- */");
+            $this->_verbose($result);
+        } 
+
         $this->_verbose("/* --- Git Process End --- */");
 
         // Check error
