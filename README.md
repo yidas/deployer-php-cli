@@ -44,7 +44,7 @@ OUTLINE
   - [Skip Flows](#skip-flows)
   - [Revert & Reset back](#revert--reset-back)
 
-* [Addition](#addition)
+* [Additions](#additions)
   - [Rsync without Password](#rsync-without-password)
   - [Save Binary Encode File](#save-binary-encode-file)
   
@@ -299,8 +299,8 @@ $ deployer --project="default" --git-commit="79616d"
 
 ---
 
-ADDITION
---------
+ADDITIONS
+---------
 
 ### Rsync without Password:  
 
