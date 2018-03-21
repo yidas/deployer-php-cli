@@ -22,6 +22,34 @@ Helping developers to deploy codes from local instance to remote instances.
 
 ---
 
+OUTLINE
+-------
+
+* [Demonstration](#demonstration)
+
+* [Requirements](#requirements)
+
+* [Installation](#installation)
+  - [Download](#download)
+  - [Make Command](#make-command)
+
+* [Configuration](#configuration)
+  - [Project Setting](#project-setting)
+  - [Config Options](#config-options)
+  - [Example](#example)
+
+* [Usage](#usage)
+  - [Interactive Project Select](#interactive-project-select)
+  - [Non-Interactive Project Select](#non-interactive-project-select)
+  - [Skip Flows](#skip-flows)
+  - [Revert & Reset back](#revert--reset-back)
+
+* [Addition](#addition)
+  - [Rsync without Password](#rsync-without-password)
+  - [Save Binary Encode File](#save-binary-encode-file)
+  
+---
+
 DEMONSTRATION
 -------------
 
@@ -151,7 +179,7 @@ return [
 ];
 ```
 
-### Config Options
+### Config Options:
 
 |Key|Type|Description|
 |:-|:-|:-|
@@ -229,7 +257,7 @@ Options:
   -v, --verbose         Increase the verbosity of messages
 ```
 
-### Interactive Project Select.
+### Interactive Project Select
 
 ```
 $ deployer
@@ -245,7 +273,7 @@ Successful Excuted Task: Deploy to 127.0.0.1
 Successful Excuted Task: Deploy
 ```
 
-### Non-Interactive Project Select.
+### Non-Interactive Project Select
 
 ```
 $ deployer --project="default"
