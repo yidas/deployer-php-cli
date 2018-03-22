@@ -268,7 +268,7 @@ Your available projects in configuration:
   [0] default
   [1] project1
 
-  Please select a project [number or project, Ctrl+C to quit]:
+  Please select a project [number or project, Ctrl+C to quit]:default
 
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
