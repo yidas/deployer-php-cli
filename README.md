@@ -70,7 +70,8 @@ $ deployer --project="project1"
 
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
-Successful Excuted Task: Deploy to 127.0.0.1
+Successful Excuted Task: Deploy to 127.0.0.11
+Successful Excuted Task: Deploy to 127.0.0.12
 Successful Excuted Task: Deploy
 ```
 
@@ -248,12 +249,13 @@ Usage:
 
 Options:
       --help            Display this help message
+      --version         Show the current version of the application
   -p, --project         Project key by configuration for deployment
       --config          Show the seleted project configuration
       --configuration
       --skip-git        Force to skip Git process
       --skip-composer   Force to skip Composer process
-      --git-commit      Git reset to given commit with --hard option
+      --git-reset       Git reset to given commit with --hard option
   -v, --verbose         Increase the verbosity of messages
 ```
 
@@ -263,13 +265,14 @@ Options:
 $ deployer
 
 Your available projects in configuration:
-default
+  [0] default
+  [1] project1
 
-Please enter the project:default
+  Please select a project [number or project, Ctrl+C to quit]:
 
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
-Successful Excuted Task: Deploy to 127.0.0.1
+Successful Excuted Task: Deploy to 127.0.0.11
 Successful Excuted Task: Deploy
 ```
 
@@ -289,10 +292,10 @@ $ deployer --project="default" --skip-git --skip-composer
 
 ### Revert & Reset back
 
-You could reset git to specified commit when you get trouble after newest release.
+You could reset git to specified commit by using `--git-reset` option when you get trouble after newest release.
 
 ```
-$ deployer --project="default" --git-commit="79616d"
+$ deployer --project="default" --git-reset="79616d"
 ```
 
 > This option is same as executing `git reset --hard 79616d` in source project.
