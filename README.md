@@ -119,7 +119,7 @@ $ tar -zxvf deployer-php-cli.tar.gz
 To make a command for deployer, `cd` into the folder, then create `deployer.php` a symbol link to bin folder: 
 
 ```
-$ sudo ln -s $(pwd -L)/deployer.php /usr/bin/deployer
+$ sudo ln -s $(pwd -L)/deployer /usr/bin/deployer
 ```
 
 > you could check `deployer.php` file is executable, if not you can modify excuted property by `chmod +x`.

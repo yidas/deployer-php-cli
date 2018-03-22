@@ -3,12 +3,12 @@
 /**
  * Application
  * 
- * @since       1.2.0
+ * @since       1.2.1
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 class App
 {
-    const VERSION = '1.2.0';
+    const VERSION = '1.2.1';
     
     function __construct() 
     {
@@ -176,7 +176,7 @@ class App
      */
     protected function _val($var, $arrayLevel=[])
     {
-        if (isset($var)) {
+        if (!isset($var)) {
             
             return null;
         }

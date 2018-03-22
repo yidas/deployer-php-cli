@@ -4,7 +4,7 @@
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
- * @since       1.2.0
+ * @since       1.2.1
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 
@@ -61,7 +61,7 @@ class Deployer
         $config = &$this->_config['git'];
         
         // Check enabled
-        if (!$config || (isset($config['enabled']) && !$config['enabled']) ) {
+        if (!$config || empty($config['enabled']) ) {
             return;
         }
         
@@ -70,25 +70,24 @@ class Deployer
         $this->_verbose("/* --- Git Process Start --- */");
 
         // Path
-        if (isset($config['path'])) {
-            $this->_cmd("cd {$config['path']}", true);
-        }
+        $path = (isset($config['path'])) ? $config['path'] : null;
+        $path = $this->_getAbsolutePath($path);
 
         // Git Checkout
         if ($config['checkout']) {
-            $result = $this->_cmd("git checkout -- .");
+            $result = $this->_cmd("git checkout -- .", $path);
         }
         // Git pull
         $cmd = ($config['branch']) 
             ? "git pull origin {$config['branch']}"
             : "git pull";
-        $result = $this->_cmd($cmd);  
+        $result = $this->_cmd($cmd, $path);  
         $this->_verbose("/* --- Git Process Pull --- */");
         $this->_verbose($result);
 
         // Git reset commit
         if ($config['reset']) {
-            $result = $this->_cmd("git reset --hard {$config['reset']}");
+            $result = $this->_cmd("git reset --hard {$config['reset']}", $path);
             $this->_verbose("/* --- Git Process Reset Commit --- */");
             $this->_verbose($result);
         } 
@@ -119,7 +118,7 @@ class Deployer
         $config = &$this->_config['composer'];
         
         // Check enabled
-        if (!$config || (isset($config['enabled']) && !$config['enabled']) ) {
+        if (!$config || empty($config['enabled']) ) {
             return;
         }
         
@@ -127,13 +126,12 @@ class Deployer
         $this->_verbose("/* --- Composer Process Start --- */");
 
         // Path
-        if (isset($config['path'])) {
-            $this->_cmd("cd {$config['path']}", true);
-        }
+        $path = (isset($config['path'])) ? $config['path'] : null;
+        $path = $this->_getAbsolutePath($path);
         
         $cmd = $config['command'];
         // Shell execution
-        $result = $this->_cmd($cmd, false);
+        $result = $this->_cmd($cmd, $path);
         $this->_verbose($result);
 
         $this->_verbose("/* --- Composer Process Result --- */");
@@ -146,7 +144,7 @@ class Deployer
          * @todo   More error detections
          */
         // Error for Composer could not find a composer.json file
-        if (strpos($result, 'Composer')===0) {
+        if (strpos($result, 'Loading composer')!==0) {
             
             $this->_error("Composer");
             $this->_verbose($result);
@@ -336,10 +334,28 @@ class Deployer
         $this->_print("Failing Excuted Task: {$string}");
     }
 
+    /**
+     * Combined path with config source path if is relatived path
+     * 
+     * @param $path
+     * @return string Path
+     */
+    private function _getAbsolutePath($path=null)
+    {   
+        // Is absolute path
+        if (strpos($path, '/')===0 && file_exists($path)) {
+
+            return $path;
+        }
+        
+        return ($path) ? $this->_config['source'] ."/{$path}" : $this->_config['source'];
+    }
+
     /** 
      * Command (Shell as default)
      * 
      * @param string $cmd
+     * @param bool|string cd into source directory first (CentOS issue), string for customization
      * @return mixed Response
      */
     private function _cmd($cmd, $cdSource=false, $output=false)
@@ -348,7 +364,9 @@ class Deployer
         $cmd = rtrim($cmd, ';');
         
         if ($cdSource) { 
-            $cmd = "cd {$this->_config['source']};{$cmd}";
+            // Get path with the determination
+            $path = ($cdSource===true) ? $this->_config['source'] : $cdSource;
+            $cmd = "cd {$path};{$cmd}";
         }
 
         if (!$output) {

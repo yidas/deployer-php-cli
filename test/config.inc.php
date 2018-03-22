@@ -23,7 +23,7 @@ return [
         'composer' => [
             'enabled' => true,
             'path' => './',
-            'command' => 'composer update',
+            'command' => 'composer install',
         ],
         'rsync' => [
             'params' => '-av --delete',

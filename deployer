@@ -6,7 +6,7 @@
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
- * @version     1.2.0
+ * @version     1.2.1
  * @author      Nick Tsai <myintaer@gmail.com>
  * @filesource  PHP 5.4.0+
  * @filesource  RSYNC commander
