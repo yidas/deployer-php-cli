@@ -98,8 +98,8 @@ class Deployer
         $this->_verbose($result);
 
         // Git reset commit
-        if ($config['commit']) {
-            $result = $this->_cmd("git reset --hard {$config['commit']}");
+        if ($config['reset']) {
+            $result = $this->_cmd("git reset --hard {$config['reset']}");
             $this->_verbose("/* --- Git Process Reset Commit --- */");
             $this->_verbose($result);
         } 

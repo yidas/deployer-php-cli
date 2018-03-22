@@ -2,9 +2,14 @@
 
 /**
  * Application
+ * 
+ * @since       1.1.0
+ * @author      Nick Tsai <myintaer@gmail.com>
  */
 class App
 {
+    const VERSION = '1.1.0';
+    
     function __construct() 
     {
         // Loader
@@ -31,11 +36,12 @@ class App
             "project:",
             "skip-git",
             "skip-composer",
-            "git-commit:",
+            "git-reset:",
             "verbose",
             "config",
             "configuration",
             "help",
+            "version",
         );
 
         try {
@@ -47,20 +53,35 @@ class App
             $projectKey = $getOpt->get(['project', 'p']);
             $showConfig = $getOpt->has(['config', 'configuration']);
             $showHelp = $getOpt->has(['help']);
+            $showVersion = $getOpt->has(['version']);
 
             /**
              * Exception before App 
              */
+            // Help
             if ($showHelp) {
-                // Load view
-                $text = require __DIR__. '/views/help.php';
-                echo $text;
+                // Load view with CLI auto display
+                require __DIR__. '/views/help.php';
                 echo "\r\n";
+                return;
+            }
+            // Version
+            if ($showVersion) {
+                // Get version
+                $version = self::VERSION;
+                echo "Deployer-PHP-CLI version {$version} \r\n";
                 return;
             }
     
             // Check project config
             if (!isset($configList[$projectKey])) {
+                // Get app root path
+                $fileLocate = dirname(__DIR__);
+                $version = self::VERSION;
+                echo "Deployer-PHP-CLI version {$version} \r\n";
+                echo "  Bootstrap directory: {$fileLocate}. \r\n";
+                echo "  Usage manual: `deployer --help`\r\n";
+                echo "\r\n";
     
                 // First time flag
                 $isFirstTime = ($projectKey===null) ? true : false;
@@ -74,14 +95,25 @@ class App
     
                     // Available project list
                     echo "Your available projects in configuration:\n";
+                    $projectKeyMap = [];
                     foreach ($configList as $key => $project) {
-                        echo "{$key}\n";
+
+                        $projectKeyMap[] = $key;
+                        $num = key($projectKeyMap);
+                        echo "  [{$num}] {$key}\n";
                     }
                     echo "\r\n";
                     // Get project input
-                    echo "Please enter the project:";
+                    echo "  Please select a project [project key, or Ctrl+C to quit]:";
                     $projectKey = trim(fgets(STDIN));
                     echo "\r\n";
+
+                    // Number input finding by $projectKeyMap
+                    if (is_numeric($projectKey)) {
+                        $projectKey = isset($projectKeyMap[$projectKey])
+                            ? $projectKeyMap[$projectKey]
+                            : $projectKey;
+                    }
 
                     $isFirstTime = false;
                 }
