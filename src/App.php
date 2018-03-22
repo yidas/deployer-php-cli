@@ -60,6 +60,9 @@ class App
              */
             // Help
             if ($showHelp) {
+                // Version first
+                $this->_echoVersion();
+                echo "\r\n";
                 // Load view with CLI auto display
                 require __DIR__. '/views/help.php';
                 echo "\r\n";
@@ -68,17 +71,17 @@ class App
             // Version
             if ($showVersion) {
                 // Get version
-                $version = self::VERSION;
-                echo "Deployer-PHP-CLI version {$version} \r\n";
+                $this->_echoVersion();
                 return;
             }
     
             // Check project config
             if (!isset($configList[$projectKey])) {
+
+                // Welcome information
                 // Get app root path
                 $fileLocate = dirname(__DIR__);
-                $version = self::VERSION;
-                echo "Deployer-PHP-CLI version {$version} \r\n";
+                $this->_echoVersion();
                 echo "  Bootstrap directory: {$fileLocate}. \r\n";
                 echo "  Usage manual: `deployer --help`\r\n";
                 echo "\r\n";
@@ -99,12 +102,15 @@ class App
                     foreach ($configList as $key => $project) {
 
                         $projectKeyMap[] = $key;
+                        // Get map key
+                        end($projectKeyMap);
                         $num = key($projectKeyMap);
+
                         echo "  [{$num}] {$key}\n";
                     }
                     echo "\r\n";
                     // Get project input
-                    echo "  Please select a project [project key, or Ctrl+C to quit]:";
+                    echo "  Please select a project [number or project, Ctrl+C to quit]:";
                     $projectKey = trim(fgets(STDIN));
                     echo "\r\n";
 
@@ -123,13 +129,13 @@ class App
 
             // Rewrite config
             $config['git']['enabled'] = ($getOpt->has('skip-git')) 
-                ? false : $config['git']['enabled'];
+                ? false : $this->_val($config, ['git', 'enabled']);
             $config['composer']['enabled'] = ($getOpt->has('skip-composer')) 
-                ? false : $config['composer']['enabled'];
+                ? false : $this->_val($config, ['composer', 'enabled']);
             $config['verbose'] = ($getOpt->has(['verbose', 'v'])) 
-                ? true : $config['verbose'];
+                ? true : $this->_val($config, ['verbose']);
             // Other config
-            $config['git']['commit'] = $getOpt->get('git-commit');
+            $config['git']['reset'] = $getOpt->get('git-reset');
 
             // Initial Deployer
             $deployer = new Deployer($config);
@@ -150,5 +156,41 @@ class App
 
             die("ERROR:{$e->getMessage()}\n");
         }
+    }
+
+    /**
+     * Echo a line of version info
+     */
+    protected function _echoVersion()
+    {
+        $version = self::VERSION;
+        echo "Deployer-PHP-CLI version {$version} \r\n";
+    }
+
+    /**
+     * Var checker
+     * 
+     * @param mixed Variable
+     * @param array Variable array level ['level1', 'key']
+     * @return mixed value of specified variable 
+     */
+    protected function _val($var, $arrayLevel=[])
+    {
+        if (isset($var)) {
+            
+            return null;
+        }
+        
+        foreach ($arrayLevel as $key => $level) {
+            
+            if (!isset($var[$level])) {
+                
+                return null;
+            }
+
+            $var = &$var[$level];
+        }
+        
+        return $var;
     }
 }

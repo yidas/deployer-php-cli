@@ -1,5 +1,3 @@
-Deployer-PHP-CLI
-
 Usage:
   deployer [options] [arguments]
   ./deployer.php [options] [arguments]
