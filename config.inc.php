@@ -32,6 +32,7 @@ return [
         'rsync' => [
             'params' => '-av --delete',
             'sleepSeconds' => 0,
+            'timeout' => 60,
         ],
         'commands' => [
             'before' => [

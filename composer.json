@@ -9,5 +9,8 @@
         "issues": "https://github.com/yidas/deployer-php-cli/issues",
         "source": "https://github.com/yidas/deployer-php-cli"
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.4.0"
+    }
 }

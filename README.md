@@ -26,24 +26,20 @@ OUTLINE
 -------
 
 * [Demonstration](#demonstration)
-
 * [Requirements](#requirements)
-
 * [Installation](#installation)
   - [Download](#download)
   - [Make Command](#make-command)
-
 * [Configuration](#configuration)
   - [Project Setting](#project-setting)
   - [Config Options](#config-options)
   - [Example](#example)
-
 * [Usage](#usage)
   - [Interactive Project Select](#interactive-project-select)
   - [Non-Interactive Project Select](#non-interactive-project-select)
   - [Skip Flows](#skip-flows)
   - [Revert & Reset back](#revert--reset-back)
-
+* [Implementation](#implementation)
 * [Additions](#additions)
   - [Rsync without Password](#rsync-without-password)
   - [Save Binary Encode File](#save-binary-encode-file)
@@ -94,13 +90,15 @@ INSTALLATION
 
 You could choose a install way between Composer or Wget:
 
-#### Composer Installation
+#### Option 1: Composer Installation
 
 ```
 composer create-project yidas/deployer-php-cli
 ```
 
-#### Wget Installation
+or
+
+#### Option 2: Wget Installation
 
 You could see [Release](https://github.com/yidas/deployer-php-cli/releases) for picking up the package with version, for example:
     
@@ -154,21 +152,23 @@ return [
         'source' => '/var/www/html/project',
         'destination' => '/var/www/html/test/',
         'exclude' => [
-            'web/upload',
-            'runtime/log',
+            '.git',
         ],
         'git' => [
             'enabled' => true,
+            'path' => './',
             'checkout' => true,
             'branch' => 'master',
         ],
         'composer' => [
             'enabled' => true,
-            'command' => 'composer update',
+            'path' => './',
+            'command' => 'composer install',
         ],
         'rsync' => [
             'params' => '-av --delete',
             'sleepSeconds' => 0,
+            'timeout' => 60,
         ],
         'commands' => [
             'before' => [
@@ -176,7 +176,7 @@ return [
             ],
         ],
         'verbose' => false,
-    ]
+    ],
 ];
 ```
 
@@ -211,6 +211,7 @@ return [
 |Key|Type|Description|
 |:-|:-|:-|
 |params|string|Addition params of rsync command|
+|timeout|int|Timeout seconds of each rsync connections|
 |sleepSeconds|int|Seconds waiting of each rsync connections|
 
 #### Commands
@@ -302,6 +303,49 @@ $ deployer --project="default" --git-reset="79616d"
 
 ---
 
+IMPLEMENTATION
+--------------
+
+Assuming `project1` is the developing project which you want to deploy.
+
+Developers must has their own site to develop, for example:
+
+```
+# Dev host
+/var/www/html/dev/nick/project1
+/var/www/html/dev/eric/project1
+```
+
+In general, you would has stage `project1` which the files are same as production:
+
+```
+# Dev/Stage host
+/var/www/html/project1
+```
+
+The purpose is that production files need to be synchronous from stage:
+
+```
+# Production host
+/var/www/html/project1
+```
+
+This tool regard stage project as `source`, which means production refers to `destination`, so the config file could like:
+
+```php
+return [
+    'project1' => [
+        ...
+        'source' => '/var/www/html/project1',
+        'destination' => '/var/www/html/',
+        ...
+```
+
+After running this tool to deploy `project1`, the stage project's files would execute processes likes `git pull` then synchronise to production.
+
+
+---
+
 ADDITIONS
 ---------
 
@@ -314,10 +358,62 @@ You can put your local user's SSH public key to destination server user for auth
 
 ### Save Binary Encode File:  
   
+  
 While excuting script, if you get the error like `Exception: Zend Extension ./deployer does not exist`, you may save the script file with binary encode, which could done by using `vim`:
 
 ```
 :set ff=unix
+```
+
+### Minify/Uglify by Gulp
+
+#### 1. Install NPM, for Debian/Ubuntu:
+
+```
+apt-get install npm
+```
+
+#### 2. Install Gulp by NPM
+
+```
+npm install -g gulp
+```
+
+#### 3. Create Gulp Project
+
+```
+cd /srv/tools/minify-project
+npm install gulp --save-dev
+touch gulpfile.js
+```
+
+#### 4. Set Gulp with packages
+
+Package: [gulp-uglify](https://www.npmjs.com/package/gulp-uglify)
+
+`gulpfile.js`:
+
+```javascript
+var gulp = require('gulp'),
+    uglify = require('gulp-uglify');
+
+gulp.task('minify', function () {
+    // Create or cleanup a temporary folder
+    // Copy all JS files from application into temporary folder
+    // Run JS uglify() in temporary folder
+    // Move finished JS files back to application
+});
+```
+
+#### 5. Set Gulp Process into Deployer
+
+```
+'source' => '/srv/project',
+'commands' => [
+    'before' => [
+        'cd ./../tools/minify-project; gulp minify',
+    ],
+],
 ```
 
 

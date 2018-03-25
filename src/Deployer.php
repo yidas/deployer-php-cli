@@ -94,7 +94,9 @@ class Deployer
 
         $this->_verbose("/* --- Git Process End --- */");
 
-        // Check error
+        /**
+         * Check error
+         */
         if (strpos($result, 'fatal:')===0) {
             
             $this->_error("Git");
@@ -140,10 +142,8 @@ class Deployer
 
         /**
          * Check error
-         * 
-         * @todo   More error detections
          */
-        // Error for Composer could not find a composer.json file
+        // Success only: Loading composer
         if (strpos($result, 'Loading composer')!==0) {
             
             $this->_error("Composer");
@@ -227,8 +227,9 @@ class Deployer
             }
 
             // Rsync shell command
-            $cmd = sprintf("%s %s %s@%s:%s",
+            $cmd = sprintf("%s --timeout=%d %s %s@%s:%s",
                 $cmd,
+                isset($config['rsync']['timeout']) ? $config['rsync']['timeout'] : 15,
                 $config['source'],
                 $config['user']['remote'],
                 $server,
@@ -245,8 +246,20 @@ class Deployer
             $this->_verbose("/* ---------------------------- */");
             $this->_verbose("");
 
-            sleep($config['rsync']['sleepSeconds']);
-            $this->_done("Deploy to {$server}");
+            /**
+             * Check error
+             */
+            // Success only: sending incremental file list
+            if (strpos($result, 'sending')!==0) {
+                // Error
+                $this->_error("Deploy to {$server}");
+                $this->_verbose($result);
+
+            } else {
+
+                sleep($config['rsync']['sleepSeconds']);
+                $this->_done("Deploy to {$server}");
+            }
         }
 
         $this->_done("Deploy");
