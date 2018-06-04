@@ -43,6 +43,7 @@ OUTLINE
 * [Additions](#additions)
   - [Rsync without Password](#rsync-without-password)
   - [Save Binary Encode File](#save-binary-encode-file)
+  - [Minify/Uglify by Gulp](#minifyuglify-by-gulp)
   
 ---
 
@@ -383,6 +384,7 @@ npm install -g gulp
 
 ```
 cd /srv/tools/minify-project
+npm init
 npm install gulp --save-dev
 touch gulpfile.js
 ```
@@ -394,14 +396,19 @@ Package: [gulp-uglify](https://www.npmjs.com/package/gulp-uglify)
 `gulpfile.js`:
 
 ```javascript
-var gulp = require('gulp'),
-    uglify = require('gulp-uglify');
+var gulp = require('gulp');
+var uglify = require('gulp-uglify');
+var pump = require('pump');
+var assetPath = '/srv/your.project.com/assets/js';
 
-gulp.task('minify', function () {
-    // Create or cleanup a temporary folder
-    // Copy all JS files from application into temporary folder
-    // Run JS uglify() in temporary folder
-    // Move finished JS files back to application
+gulp.task('compress', function (callback) {
+  pump([
+        gulp.src(assetPath+'/**/*.js'),
+        uglify(),
+        gulp.dest(assetPath)
+    ],
+    callback
+  );
 });
 ```
 
@@ -411,7 +418,7 @@ gulp.task('minify', function () {
 'source' => '/srv/project',
 'commands' => [
     'before' => [
-        'cd ./../tools/minify-project; gulp minify',
+        'minify' => 'cd /srv/tools/minify-project; gulp compress',
     ],
 ],
 ```

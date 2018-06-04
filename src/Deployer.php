@@ -190,7 +190,7 @@ class Deployer
             $this->_verbose($result);
             $this->_verbose("/* --- Command:{$key} Process Start --- */");
 
-            $this->_done("Commands {$trigger}");
+            $this->_done("Commands {$trigger}: {$key}");
         }
     }
 
