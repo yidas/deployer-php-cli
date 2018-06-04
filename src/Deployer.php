@@ -85,6 +85,12 @@ class Deployer
         $this->_verbose("/* --- Git Process Pull --- */");
         $this->_verbose($result);
 
+        // Git Checkout
+        if ($config['submodule']) {
+            $result = $this->_cmd("git submodule init", $path);
+            $result = $this->_cmd("git submodule update", $path);
+        }
+
         // Git reset commit
         if ($config['reset']) {
             $result = $this->_cmd("git reset --hard {$config['reset']}", $path);

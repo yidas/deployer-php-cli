@@ -23,6 +23,7 @@ return [
             'path' => './',
             'checkout' => true,
             'branch' => 'master',
+            'submodule' => false,
         ],
         'composer' => [
             'enabled' => true,

@@ -160,6 +160,7 @@ return [
             'path' => './',
             'checkout' => true,
             'branch' => 'master',
+            'submodule' => false,
         ],
         'composer' => [
             'enabled' => true,
@@ -199,12 +200,14 @@ return [
 |enabled|bool|Enable git or not|
 |checkout|bool|Execute git checkout -- . before git pull  |
 |branch|string|Branch name for git pull, pull default branch if empty  |
+|submodule|bool|Git submodule enabled |
 
 #### Composer
 
 |Key|Type|Description|
 |:-|:-|:-|
 |enabled|bool|Enable Composer or not|
+|path|string|Composer executing relative path|
 |command|string|Update command likes `composer update`|
 
 #### Rsync
@@ -418,7 +421,7 @@ gulp.task('compress', function (callback) {
 'source' => '/srv/project',
 'commands' => [
     'before' => [
-        'minify' => 'cd /srv/tools/minify-project; gulp compress',
+        'Minify JS' => 'cd /srv/tools/minify-project; gulp compress',
     ],
 ],
 ```
