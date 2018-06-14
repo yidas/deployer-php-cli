@@ -17,6 +17,7 @@ return [
         'destination' => '/var/www/html/test/',
         'exclude' => [
             '.git',
+            'tmp/*',
         ],
         'git' => [
             'enabled' => true,
@@ -32,8 +33,9 @@ return [
         ],
         'rsync' => [
             'params' => '-av --delete',
-            'sleepSeconds' => 0,
-            'timeout' => 60,
+            // 'sleepSeconds' => 0,
+            // 'timeout' => 60,
+            // 'identityFile' => '/root/.ssh/id_rsa',
         ],
         'commands' => [
             'before' => [

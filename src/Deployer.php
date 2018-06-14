@@ -56,9 +56,18 @@ class Deployer
         if (!isset($this->_config['git'])) {
             return;
         }
+
+        // Default config
+        $defaultConfig = [
+            'enabled' => false,
+            'path' => './',
+            'checkout' => true,
+            'branch' => 'master',
+            'submodule' => false,
+        ];
         
-        // Git Config
-        $config = &$this->_config['git'];
+        // Config init
+        $config = array_merge($defaultConfig, $this->_config['git']);
         
         // Check enabled
         if (!$config || empty($config['enabled']) ) {
@@ -208,7 +217,37 @@ class Deployer
         // Config
         $config = &$this->_config;
 
-        // process
+        /**
+         * Command builder
+         */
+        $rsyncCmd = 'rsync ' . $config['rsync']['params'];
+
+        // Add exclude
+        $excludeFiles = $config['exclude'];
+        foreach ((array)$excludeFiles as $key => $file) {
+            $rsyncCmd .= " --exclude \"{$file}\"";
+        }
+
+        // IdentityFile
+        $identityFile = isset($config['rsync']['identityFile']) 
+            ? $config['rsync']['identityFile'] 
+            : null;
+        if ($identityFile && file_exists($identityFile)) {
+            $rsyncCmd .= " -e \"ssh -i {$identityFile}\"";
+        } else {
+            $this->_error("IdentityFile not found: {$identityFile}");
+        }
+
+        // Common parameters
+        $rsyncCmd = sprintf("%s --timeout=%d %s",
+            $rsyncCmd,
+            isset($config['rsync']['timeout']) ? $config['rsync']['timeout'] : 15,
+            $config['source']
+        );
+
+        /**
+         * Process
+         */
         foreach ($config['servers'] as $key => $server) {         
 
             // Info display
@@ -221,22 +260,9 @@ class Deployer
             $this->_verbose("/* -------------------------- */");
             $this->_verbose("Processing Rsync...");
 
-
-            /* Command builder */
-            
-            $cmd = 'rsync ' . $config['rsync']['params'];
-
-            // Add exclude
-            $excludeFiles = $config['exclude'];
-            foreach ((array)$excludeFiles as $key => $file) {
-                $cmd .= " --exclude \"{$file}\"";
-            }
-
-            // Rsync shell command
-            $cmd = sprintf("%s --timeout=%d %s %s@%s:%s",
-                $cmd,
-                isset($config['rsync']['timeout']) ? $config['rsync']['timeout'] : 15,
-                $config['source'],
+            // Rsync destination building for each server
+            $cmd = sprintf("%s %s@%s:%s",
+                $rsyncCmd,
                 $config['user']['remote'],
                 $server,
                 $config['destination'] 
@@ -263,7 +289,12 @@ class Deployer
 
             } else {
 
-                sleep($config['rsync']['sleepSeconds']);
+                // Sleep option per each deployed server
+                if (isset($config['rsync']['sleepSeconds'])) {
+                    
+                    sleep((int)$config['rsync']['sleepSeconds']);
+                }
+
                 $this->_done("Deploy to {$server}");
             }
         }
