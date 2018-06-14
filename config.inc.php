@@ -17,6 +17,7 @@ return [
         'destination' => '/var/www/html/test/',
         'exclude' => [
             '.git',
+            'tmp/*',
         ],
         'git' => [
             'enabled' => true,
@@ -39,6 +40,12 @@ return [
             'before' => [
                 '',
             ],
+        ],
+        'webhook' => [
+            'enabled' => true,
+            'provider' => 'gitlab',
+            'project' => 'yidas/test-submodule-parent',
+            'token' => 'thisistoken',
         ],
         'verbose' => false,
     ],

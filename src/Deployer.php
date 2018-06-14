@@ -86,13 +86,13 @@ class Deployer
         $this->_verbose($result);
 
         // Git Checkout
-        if ($config['submodule']) {
+        if (isset($config['submodule']) && $config['submodule']) {
             $result = $this->_cmd("git submodule init", $path);
             $result = $this->_cmd("git submodule update", $path);
         }
 
         // Git reset commit
-        if ($config['reset']) {
+        if (isset($config['reset']) && $config['reset']) {
             $result = $this->_cmd("git reset --hard {$config['reset']}", $path);
             $this->_verbose("/* --- Git Process Reset Commit --- */");
             $this->_verbose($result);
@@ -263,7 +263,10 @@ class Deployer
 
             } else {
 
-                sleep($config['rsync']['sleepSeconds']);
+                // Sleep option
+                if (isset($config['rsync']['sleepSeconds']) && is_numeric($config['rsync']['sleepSeconds'])) {
+                    sleep($config['rsync']['sleepSeconds']);
+                }
                 $this->_done("Deploy to {$server}");
             }
         }

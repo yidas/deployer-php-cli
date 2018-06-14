@@ -115,13 +115,13 @@ $ tar -zxvf deployer-php-cli.tar.gz
 
 ### Make Command
 
-To make a command for deployer, `cd` into the folder, then create `deployer.php` a symbol link to bin folder: 
+To make a command for deployer, if the package folder is `deployer-php-cli` then create a symbol by following command: 
 
 ```
-$ sudo ln -s $(pwd -L)/deployer /usr/bin/deployer
+$ sudo ln -s $(pwd -L)/deployer-php-cli/deployer /usr/bin/deployer
 ```
 
-> you could check `deployer.php` file is executable, if not you can modify excuted property by `chmod +x`.
+> you could check `deployer-php-cli/deployer` file is executable, if not you can modify excuted property by `chmod +x`.
 
 After all, you could start to set up the `config.inc.php` for deployer, and enjoy to use:
 
@@ -154,6 +154,7 @@ return [
         'destination' => '/var/www/html/test/',
         'exclude' => [
             '.git',
+            'tmp/*',
         ],
         'git' => [
             'enabled' => true,
