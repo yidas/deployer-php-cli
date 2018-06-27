@@ -4,7 +4,7 @@
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
- * @since       1.4.0
+ * @since       1.4.1
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 
@@ -158,9 +158,13 @@ class Deployer
         /**
          * Check error
          */
-        // Success only: Loading composer
-        if (strpos($result, 'Loading composer')!==0) {
-            
+        // White list: Loading composer & Do not run Composer(sudo warning)
+        if (strpos($result, 'Loading composer')==0
+            || strpos($result, 'Do not run Composer')==0) {
+                
+            // Success
+        } else {
+            // Error
             $this->_error("Composer");
             $this->_verbose($result);
             exit;

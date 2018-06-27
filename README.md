@@ -43,6 +43,7 @@ OUTLINE
 * [Additions](#additions)
   - [Rsync without Password](#rsync-without-password)
   - [Save Binary Encode File](#save-binary-encode-file)
+  - [Yii2 Deployment](#yii2-deployment)
   - [Minify/Uglify by Gulp](#minifyuglify-by-gulp)
   
 ---
@@ -94,7 +95,7 @@ You could choose a install way between Composer or Wget:
 #### Option 1: Composer Installation
 
 ```
-composer create-project yidas/deployer-php-cli
+composer create-project --prefer-dist yidas/deployer-php-cli
 ```
 
 or
@@ -370,6 +371,23 @@ While excuting script, if you get the error like `Exception: Zend Extension ./de
 
 ```
 :set ff=unix
+```
+
+### Yii2 Deployment
+
+For `yii2-app-advanced`, requiring Composer and yii2 init command for `config.inc.php`:
+
+```php
+'composer' => [                     
+    'enabled' => true,              
+    'path' => './',                 
+    'command' => 'composer install',
+],                                  
+'commands' => [
+    'before' => [
+        'yii2 init prod' => './init --env=Production --overwrite=All',
+    ],
+],
 ```
 
 ### Minify/Uglify by Gulp
