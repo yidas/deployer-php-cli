@@ -28,8 +28,10 @@ OUTLINE
 * [Demonstration](#demonstration)
 * [Requirements](#requirements)
 * [Installation](#installation)
-  - [Download](#download)
-  - [Make Command](#make-command)
+  - [Composer Installation](#composer-installation)
+  - [Wget Installation](#wget-installation)
+    - [Make Command](#make-command)
+  - [Startup](#startup)
 * [Configuration](#configuration)
   - [Project Setting](#project-setting)
   - [Config Options](#config-options)
@@ -40,6 +42,7 @@ OUTLINE
   - [Skip Flows](#skip-flows)
   - [Revert & Reset back](#revert--reset-back)
 * [Implementation](#implementation)
+  - [Permissions Handling](#permissions-handling)
 * [Additions](#additions)
   - [Rsync without Password](#rsync-without-password)
   - [Save Binary Encode File](#save-binary-encode-file)
@@ -88,19 +91,15 @@ This library requires the following:
 INSTALLATION
 ------------
 
-### Download
+### Composer Installation
 
-You could choose a install way between Composer or Wget:
-
-#### Option 1: Composer Installation
+Using Composer to install is the easiest way with auto-installer:
 
 ```
 composer create-project --prefer-dist yidas/deployer-php-cli
 ```
 
-or
-
-#### Option 2: Wget Installation
+### Wget Installation
 
 You could see [Release](https://github.com/yidas/deployer-php-cli/releases) for picking up the package with version, for example:
     
@@ -114,7 +113,7 @@ After download, uncompress the package:
 $ tar -zxvf deployer-php-cli.tar.gz
 ```
 
-### Make Command
+#### Make Command
 
 To make a command for deployer, if the package folder is `deployer-php-cli` then create a symbol by following command: 
 
@@ -123,7 +122,9 @@ $ sudo chmod +x $(pwd -L)/deployer-php-cli/deployer
 $ sudo ln -s $(pwd -L)/deployer-php-cli/deployer /usr/bin/deployer
 ```
 
-After all, you could start to set up the `config.inc.php` for deployer, and enjoy to use:
+### Startup
+
+After installation, you could start to set up the `config.inc.php` for deployer, and enjoy to use:
 
 ```
 $ deployer
@@ -350,6 +351,26 @@ return [
 
 After running this tool to deploy `project1`, the stage project's files would execute processes likes `git pull` then synchronise to production.
 
+
+### Permissions Handling
+
+##### 1. Local and Remote Users
+
+You could create a user on local for runing Deployer. It will run process by the local user you set even you run Deployer by root:
+
+```php
+return [
+    'project1' => [
+         'user' => [
+            'local' => 'deployer',
+            'remote' => 'deployer',
+        ],
+        ...
+```
+
+##### 2. Application File Permissions
+
+On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the local user generates `664/775` mod files to deploy for remote `www-data` access. 
 
 ---
 
