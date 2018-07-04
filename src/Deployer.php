@@ -4,7 +4,7 @@
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
- * @since       1.4.2
+ * @since       1.5.0
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 
