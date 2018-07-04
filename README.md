@@ -119,10 +119,9 @@ $ tar -zxvf deployer-php-cli.tar.gz
 To make a command for deployer, if the package folder is `deployer-php-cli` then create a symbol by following command: 
 
 ```
+$ sudo chmod +x $(pwd -L)/deployer-php-cli/deployer
 $ sudo ln -s $(pwd -L)/deployer-php-cli/deployer /usr/bin/deployer
 ```
-
-> you could check `deployer-php-cli/deployer` file is executable, if not you can modify excuted property by `chmod +x`.
 
 After all, you could start to set up the `config.inc.php` for deployer, and enjoy to use:
 
