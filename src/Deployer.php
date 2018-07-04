@@ -85,12 +85,16 @@ class Deployer
         // Git Checkout
         if ($config['checkout']) {
             $result = $this->_cmd("git checkout -- .", $path);
+            // Git common error check
+            $this->checkErrorGit($result);
         }
         // Git pull
         $cmd = ($config['branch']) 
             ? "git pull origin {$config['branch']}"
             : "git pull";
         $result = $this->_cmd($cmd, $path);  
+        // Git common error check
+        $this->checkErrorGit($result);
         $this->_verbose("/* --- Git Process Pull --- */");
         $this->_verbose($result);
 
@@ -98,6 +102,8 @@ class Deployer
         if ($config['submodule']) {
             $result = $this->_cmd("git submodule init", $path);
             $result = $this->_cmd("git submodule update", $path);
+            // Git common error check
+            $this->checkErrorGit($result);
         }
 
         // Git reset commit
@@ -105,19 +111,11 @@ class Deployer
             $result = $this->_cmd("git reset --hard {$config['reset']}", $path);
             $this->_verbose("/* --- Git Process Reset Commit --- */");
             $this->_verbose($result);
+            // Git common error check
+            $this->checkErrorGit($result);
         } 
 
         $this->_verbose("/* --- Git Process End --- */");
-
-        /**
-         * Check error
-         */
-        if (strpos($result, 'fatal:')===0) {
-            
-            $this->_error("Git");
-            $this->_verbose($result);
-            exit;
-        }
 
         $this->_done("Git");
     }
@@ -386,6 +384,7 @@ class Deployer
     private function _error($string)
     {
         $this->_print("Failing Excuted Task: {$string}");
+        $this->_print("(Use -v --verbose parameter to display error message)");
     }
 
     /**
@@ -442,6 +441,23 @@ class Deployer
     {
         if (isset($this->_config['verbose']) && $this->_config['verbose']) {
             $this->_print($string);
+        }
+    }
+
+    /**
+     * check error for Git
+     *
+     * @param string $result Command result
+     * @return void
+     */
+    private function checkErrorGit($result)
+    {
+        // Git common characteristic
+        if (strpos($result, 'fatal: ')!==false) {
+            
+            $this->_error("Git");
+            $this->_verbose($result);
+            exit;
         }
     }
 }
