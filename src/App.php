@@ -29,6 +29,7 @@ class App
          * Options definition
          */
         $shortopts  = "";
+        $shortopts .= "h";
         $shortopts .= "p:";
         $shortopts .= "v";
 
@@ -52,7 +53,7 @@ class App
     
             $projectKey = $getOpt->get(['project', 'p']);
             $showConfig = $getOpt->has(['config', 'configuration']);
-            $showHelp = $getOpt->has(['help']);
+            $showHelp = $getOpt->has(['help', 'h']);
             $showVersion = $getOpt->has(['version']);
 
             /**

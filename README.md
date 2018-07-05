@@ -167,13 +167,14 @@ return [
         'composer' => [
             'enabled' => true,
             'path' => './',
-            'command' => 'composer install',
+            // 'path' => ['./', './application/'],
+            'command' => 'composer -n install',
         ],
         'rsync' => [
             'params' => '-av --delete',
             // 'sleepSeconds' => 0,
             // 'timeout' => 60,
-            // 'identityFile' => '/root/.ssh/id_rsa',
+            // 'identityFile' => '/home/deployer/.ssh/id_rsa',
         ],
         'commands' => [
             'before' => [
@@ -210,7 +211,7 @@ return [
 |Key|Type|Description|
 |:-|:-|:-|
 |enabled|bool|Enable Composer or not|
-|path|string|Composer executing relative path|
+|path|string|Composer executing relative path which supports multiple array paths|
 |command|string|Update command likes `composer update`|
 
 #### Rsync

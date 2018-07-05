@@ -29,13 +29,14 @@ return [
         'composer' => [
             'enabled' => true,
             'path' => './',
-            'command' => 'composer install',
+            // 'path' => ['./', './application/'],
+            'command' => 'composer -n install',
         ],
         'rsync' => [
             'params' => '-av --delete',
             // 'sleepSeconds' => 0,
             // 'timeout' => 60,
-            // 'identityFile' => '/root/.ssh/id_rsa',
+            // 'identityFile' => '/home/deployer/.ssh/id_rsa',
         ],
         'commands' => [
             'before' => [

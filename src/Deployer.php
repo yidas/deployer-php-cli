@@ -75,11 +75,11 @@ class Deployer
         }
         
         // Git process
-        
-        $this->_verbose("/* --- Git Process Start --- */");
+        $this->_verbose("");
+        $this->_verbose("### Git Process Start");
 
         // Path
-        $path = (isset($config['path'])) ? $config['path'] : null;
+        $path = (isset($config['path'])) ? $config['path'] : './';
         $path = $this->_getAbsolutePath($path);
 
         // Git Checkout
@@ -95,7 +95,7 @@ class Deployer
         $result = $this->_cmd($cmd, $path);  
         // Git common error check
         $this->checkErrorGit($result);
-        $this->_verbose("/* --- Git Process Pull --- */");
+        $this->_verbose("### Git Process Pull");
         $this->_verbose($result);
 
         // Git Checkout
@@ -109,13 +109,13 @@ class Deployer
         // Git reset commit
         if ($config['reset']) {
             $result = $this->_cmd("git reset --hard {$config['reset']}", $path);
-            $this->_verbose("/* --- Git Process Reset Commit --- */");
+            $this->_verbose("### Git Process Reset Commit");
             $this->_verbose($result);
             // Git common error check
             $this->checkErrorGit($result);
         } 
 
-        $this->_verbose("/* --- Git Process End --- */");
+        $this->_verbose("### /Git Process End\n");
 
         $this->_done("Git");
     }
@@ -138,35 +138,52 @@ class Deployer
         }
         
         // Composer process
-        $this->_verbose("/* --- Composer Process Start --- */");
+        $this->_verbose("");
+        $this->_verbose("### Composer Process Start");
 
         // Path
-        $path = (isset($config['path'])) ? $config['path'] : null;
-        $path = $this->_getAbsolutePath($path);
+        $path = (isset($config['path'])) ? $config['path'] : './';
+        // Alternative multiple composer option
+        $paths = is_array($path) ? $path : [$path];
+        $isSinglePath = (count($paths)<=1) ? true : false;
+
+        // Each composer path with same setting
+        foreach ($paths as $key => $path) {
+            
+            $path = $this->_getAbsolutePath($path);
         
-        $cmd = $config['command'];
-        // Shell execution
-        $result = $this->_cmd($cmd, $path);
-        $this->_verbose($result);
+            $cmd = $config['command'];
+            // Shell execution
+            $result = $this->_cmd($cmd, $path);
 
-        $this->_verbose("/* --- Composer Process Result --- */");
-        $this->_verbose($result);
-        $this->_verbose("/* --- Composer Process End --- */");
-
-        /**
-         * Check error
-         */
-        // White list: Loading composer & Do not run Composer(sudo warning)
-        if (strpos($result, 'Loading composer')==0
-            || strpos($result, 'Do not run Composer')==0) {
-                
-            // Success
-        } else {
-            // Error
-            $this->_error("Composer");
+            $this->_verbose("### Composer Process Result");
             $this->_verbose($result);
-            exit;
+
+            /**
+             * Check error
+             */
+            // White list: Loading composer & Do not run Composer(sudo warning)
+            if (strpos($result, 'Loading composer')==0
+                || strpos($result, 'Do not run Composer')==0) {
+                    
+                // Success
+            } else {
+                // Error
+                if ($isSinglePath) {
+                    // Single path does not show the key
+                    $this->_error("Composer");
+                } else {
+                    // Multiple paths shows current info
+                    $this->_error("Composer #{$key} with path: {$path}");
+                }
+                
+                $this->_verbose($result);
+                exit;
+            }
+
         }
+
+        $this->_verbose("### /Composer Process End\n");
 
         $this->_done("Composer");
     }
@@ -197,15 +214,16 @@ class Deployer
                 continue;
             }
             
-            $this->_verbose("/* --- Command:{$key} Process Start --- */");
+            $this->_verbose("");
+            $this->_verbose("### Command:{$key} Process Start");
             
             // Format command
             $cmd = "{$cmd};";
             $result = $this->_cmd($cmd, true);
 
-            $this->_verbose("/* --- Command:{$key} Process Result --- */");
+            $this->_verbose("### Command:{$key} Process Result");
             $this->_verbose($result);
-            $this->_verbose("/* --- Command:{$key} Process Start --- */");
+            $this->_verbose("### Command:{$key} Process Start");
 
             $this->_done("Commands {$trigger}: {$key}");
         }
@@ -237,7 +255,7 @@ class Deployer
         if ($identityFile && file_exists($identityFile)) {
             $rsyncCmd .= " -e \"ssh -i {$identityFile}\"";
         } else {
-            $this->_error("IdentityFile not found: {$identityFile}");
+            $this->_error("Deploy (IdentityFile not found: {$identityFile})");
         }
 
         // Common parameters
@@ -253,14 +271,13 @@ class Deployer
         foreach ($config['servers'] as $key => $server) {         
 
             // Info display
-            $this->_verbose("/* --- Rsync Process Info --- */");
+            $this->_verbose("");
+            $this->_verbose("### Rsync Process Info");
             $this->_verbose('[Process]: '.($key+1));
             $this->_verbose('[Server ]: '.$server);
             $this->_verbose('[User   ]: '.$config['user']['remote']);
             $this->_verbose('[Source ]: '.$config['source']);
             $this->_verbose('[Remote ]: '.$config['destination']);
-            $this->_verbose("/* -------------------------- */");
-            $this->_verbose("Processing Rsync...");
 
             // Rsync destination building for each server
             $cmd = sprintf("%s %s@%s:%s",
@@ -275,9 +292,10 @@ class Deployer
             // Shell execution
             $result = $this->_cmd($cmd);
 
-            $this->_verbose("/* --- Rsync Process Result --- */");
+            $this->_verbose("### Rsync Process Result");
+            $this->_verbose("--------------------------");
             $this->_verbose($result);
-            $this->_verbose("/* ---------------------------- */");
+            $this->_verbose("----------------------------");
             $this->_verbose("");
 
             /**
@@ -437,7 +455,7 @@ class Deployer
      * 
      * @param string $string
      */
-    private function _verbose($string)
+    private function _verbose($string='')
     {
         if (isset($this->_config['verbose']) && $this->_config['verbose']) {
             $this->_print($string);
