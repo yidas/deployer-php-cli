@@ -67,10 +67,11 @@ The interactive result could like be:
 $ deployer
 
 Your available projects in configuration:
-  [0] default
-  [1] your.project.com
+  [0] your.project.com
+  [1] second.project.com
+  [2] other.site.com
 
-  Please select a project [number or project, Ctrl+C to quit]:1
+  Please select a project [number or project, Ctrl+C to quit]:0
 
 Selected Project: your.project.com
 Successful Excuted Task: Git
