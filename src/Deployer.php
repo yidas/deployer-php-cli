@@ -39,6 +39,9 @@ class Deployer
         // cd into source directory
         $this->_cmd("cd {$this->_config['source']};");
         
+        // Project selected info
+        $this->_print("Selected Project: {$config['projectKey']}");
+
         $this->runCommands('init');
         $this->runGit();
         $this->runComposer();

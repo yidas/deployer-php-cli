@@ -59,21 +59,31 @@ Deploy local project to remote servers by just executing the deployer in command
 ```
 $ deployer
 ```
-Or you can call the original bootstrap:
-```
-$ ./deployer
-$ php ./deployer
-```
 
-The result could like be:
-```
-$ deployer --project="project1"
+> Alternatively, you could call the original bootstrap: `$ ./deployer`, `$ php ./deployer`
 
+The interactive result could like be:
+```
+$ deployer
+
+Your available projects in configuration:
+  [0] default
+  [1] your.project.com
+
+  Please select a project [number or project, Ctrl+C to quit]:1
+
+Selected Project: your.project.com
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
 Successful Excuted Task: Deploy to 127.0.0.11
 Successful Excuted Task: Deploy to 127.0.0.12
 Successful Excuted Task: Deploy
+```
+
+Or you could run by non-interactive mode with the same purpose:
+
+```
+$ deployer --project="your.project.com"
 ```
 
 ---
@@ -258,7 +268,7 @@ Usage:
   ./deployer [options] [arguments]
 
 Options:
-      --help            Display this help message
+  -h, --help            Display this help message
       --version         Show the current version of the application
   -p, --project         Project key by configuration for deployment
       --config          Show the seleted project configuration
@@ -276,10 +286,11 @@ $ deployer
 
 Your available projects in configuration:
   [0] default
-  [1] project1
+  [1] your.project.com
 
-  Please select a project [number or project, Ctrl+C to quit]:default
+  Please select a project [number or project, Ctrl+C to quit]:your.project.com
 
+Selected Project: your.project.com
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
 Successful Excuted Task: Deploy to 127.0.0.11
@@ -289,7 +300,7 @@ Successful Excuted Task: Deploy
 ### Non-Interactive Project Select
 
 ```
-$ deployer --project="default"
+$ deployer --project="your.project.com"
 ```
 
 ### Skip Flows

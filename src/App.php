@@ -127,6 +127,8 @@ class App
             }
 
             $config = &$configList[$projectKey];
+            // Add `projectKey` key to the current config 
+            $config['projectKey'] = $projectKey;
 
             // Rewrite config
             $config['git']['enabled'] = ($getOpt->has('skip-git')) 
