@@ -12,9 +12,9 @@ FEATURES
 
 - *Deploy to **multiple** servers by **projects/groups***
 
-- ***Git support** for source project*
+- ***Yii2, Laravel, Codeigniter3** Frameworks support*
 
-- ***Composer support** for source project*
+- ***Git, Composer support** for source project*
 
 - ***Filter** for excluding specified files support*
 
