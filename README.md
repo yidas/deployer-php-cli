@@ -401,7 +401,7 @@ return [
 
 On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the local user generates `664/775` mod files to deploy for remote `www-data` access. 
 
-> `umask 002` could be set in `~/.bashrc` or global.
+> `umask 002` could be set in `~/.bashrc` or global. Note that the permission need to apply for source files such as init from Git clone.
 
 ---
 
