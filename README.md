@@ -35,6 +35,10 @@ OUTLINE
 * [Configuration](#configuration)
   - [Project Setting](#project-setting)
   - [Config Options](#config-options)
+    - [Git](#git)
+    - [Composer](#composer)
+    - [Rsync]($rsync)
+    - [Commands]($commands)
   - [Example](#example)
 * [Usage](#usage)
   - [Interactive Project Select](#interactive-project-select)
@@ -198,6 +202,8 @@ return [
 ```
 
 ### Config Options:
+
+Configuration provides many features' setting, you could customize and pick up the setting you need.
 
 |Key|Type|Description|
 |:-|:-|:-|
