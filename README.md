@@ -108,7 +108,7 @@ INSTALLATION
 
 ### Composer Installation
 
-Using Composer to install is the easiest way with auto-installer:
+Using Composer by sudoer or root to install is the easiest way with auto-installer:
 
 ```
 composer create-project --prefer-dist yidas/deployer-php-cli
