@@ -385,7 +385,7 @@ After running this tool to deploy `project1`, the stage project's files would ex
 
 ##### 1. Local and Remote Users
 
-You could create a user on local for runing Deployer. It will run process by the local user you set even you run Deployer by root:
+You could create a user on local for runing Deployer with `umask 002`. It will run process by the local user you set even you run Deployer by root:
 
 ```php
 return [
@@ -400,6 +400,8 @@ return [
 ##### 2. Application File Permissions
 
 On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the local user generates `664/775` mod files to deploy for remote `www-data` access. 
+
+> `umask 002` could be set in `~/.bashrc` or global.
 
 ---
 
