@@ -210,6 +210,12 @@ return [
 
 #### Git
 
+To use Git into deploy task, you need to init or clone Git to the source directory at the first time:
+
+```
+$ git clone git@gitlab.com:username/project-to-deploy.git sourceDir
+```
+
 |Key|Type|Description|
 |:-|:-|:-|
 |enabled|bool|Enable git or not|
@@ -218,6 +224,8 @@ return [
 |submodule|bool|Git submodule enabled |
 
 #### Composer
+
+To use Composer into deploy task, make sure that there are composer files in the source directory.
 
 |Key|Type|Description|
 |:-|:-|:-|
@@ -235,6 +243,8 @@ return [
 |identityFile|string|Identity file path for appling rsync|
 
 #### Commands
+
+Commands provides you to customize deploy tasks with many trigger hooks.
 
 |Key|Type|Description|
 |:-|:-|:-|
