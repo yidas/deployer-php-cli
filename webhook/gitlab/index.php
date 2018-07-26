@@ -52,6 +52,9 @@ try {
         
         // match config
         $matchedConfig = $config;
+        // For Deployer config
+        $matchedConfig['projectKey'] = $key;
+
         break;
     }
 } catch (\Exception $e) {
