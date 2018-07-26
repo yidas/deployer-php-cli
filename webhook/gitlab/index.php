@@ -82,6 +82,9 @@ require __DIR__. '/../../src/ShellConsole.php';
 require __DIR__. '/../../src/Deployer.php';
 // Initial Deployer
 $deployer = new Deployer($matchedConfig);
+// Response format
+http_response_code(200);
+header('Content-Type: text/html; charset=utf-8');
 // Run Deployer
 $deployer->run();
 
