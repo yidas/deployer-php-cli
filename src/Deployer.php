@@ -102,7 +102,7 @@ class Deployer
         $this->_verbose($result);
 
         // Git Checkout
-        if ($config['submodule']) {
+        if (isset($config['submodule']) && $config['submodule']) {
             $result = $this->_cmd("git submodule init", $path);
             $result = $this->_cmd("git submodule update", $path);
             // Git common error check
@@ -110,7 +110,7 @@ class Deployer
         }
 
         // Git reset commit
-        if ($config['reset']) {
+        if (isset($config['reset']) && $config['reset']) {
             $result = $this->_cmd("git reset --hard {$config['reset']}", $path);
             $this->_verbose("### Git Process Reset Commit");
             $this->_verbose($result);

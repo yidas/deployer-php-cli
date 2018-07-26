@@ -427,6 +427,7 @@ return [
             'provider' => 'gitlab',
             'project' => 'yidas/deployer-php-cli',
             'token' => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+            'branch' => 'release',
         ],
     ],
 ];
@@ -438,6 +439,7 @@ return [
 |provider|string|Webhook provider such as `gitlab`|
 |project|string|Provider's project name likes `username/project`|
 |token|string|Webhook secret token|
+|branch|string|Listening branch for push event|
 
 #### PHP Web Setting
 
@@ -474,6 +476,8 @@ location ~ \.php$ {
 According to above Nginx website setting, the webhook URL could be `https://webhook.your.com/gitlab`. After setting `config.inc.php` and setting up scecret token, you could give a push event to go!
 
 <img src="https://raw.githubusercontent.com/yidas/deployer-php-cli/dev_webhook/img/cicd-gitlab-webhook.png" />
+
+> Note: Default setting is listen `release` branch's push event to trigger.
 
 ---
 
