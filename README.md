@@ -1,7 +1,7 @@
-Deployer *by PHP-CLI*
-=====================
+Deployer PHP-CLI
+================
 
-Code deployment tool based on RSYNC running by PHP-CLI script
+CI/CD Deployment tool written in PHP supported for popular frameworks
 
 [![Latest Stable Version](https://poser.pugx.org/yidas/deployer-php-cli/v/stable?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
 [![Latest Unstable Version](https://poser.pugx.org/yidas/deployer-php-cli/v/unstable?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
@@ -47,6 +47,10 @@ OUTLINE
   - [Revert & Reset back](#revert--reset-back)
 * [Implementation](#implementation)
   - [Permissions Handling](#permissions-handling)
+* [CI/CD](#cicd)
+  - [Webhook](#webhook)
+    - [PHP Web Setting](#php-web-setting)
+    - [Gitlab](#gitlab)
 * [Additions](#additions)
   - [Rsync without Password](#rsync-without-password)
   - [Save Binary Encode File](#save-binary-encode-file)
@@ -402,6 +406,74 @@ return [
 On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the local user generates `664/775` mod files to deploy for remote `www-data` access. 
 
 > `umask 002` could be set in `~/.bashrc` or global. Note that the permission need to apply for source files such as init from Git clone.
+
+---
+
+CI/CD
+-----
+
+### Webhook
+
+Deployer provides webhook feature for triggering project deployment by any webhook service such as Gitlab.
+
+To use webhook, you need add webhook setting into the projects you need in `config.inc.php`:
+
+```php
+return [
+    'project' => [
+        // ...
+        'webhook' => [
+            'enabled' => true,
+            'provider' => 'gitlab',
+            'project' => 'yidas/deployer-php-cli',
+            'token' => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        ],
+    ],
+];
+```
+
+|Key|Type|Description|
+|:-|:-|:-|
+|enabled|bool|Enable Webhook or not|
+|provider|string|Webhook provider such as `gitlab`|
+|project|string|Provider's project name likes `username/project`|
+|token|string|Webhook secret token|
+
+#### PHP Web Setting
+
+Deployer need a user to excute deployment, and the user is usually not the PHP web user.
+
+For PHP-FPM, you could add a new PHP pool socket with the current user setting for the webhook site, for example `/etc/php/fpm/pool.d/deployer.conf`:
+
+```php
+[deployer]
+
+user = deployer
+group = www-data
+
+listen = /run/php/php7.0-fpm_deployer.sock
+```
+
+Then give the new socket to the webhook server setting, for Nginx eaxmple `/etc/nginx/site-enabled/webhook`:
+
+```nginx
+server_name webhook.your.com;
+root /srv/deployer/deployer-php-cli/webhook;
+
+location ~ \.php$ {                                     
+    include snippets/fastcgi-php.conf;                  
+    fastcgi_param SCRIPT_FILENAME $request_filename;    
+    fastcgi_pass unix:/run/php/php7.0-fpm_deployer.sock;
+}                                                                                                               
+```
+
+#### Gitlab
+
+- Prividor key: `gitlab`
+
+According to above Nginx website setting, the webhook URL could be `https://webhook.your.com/gitlab`. After setting `config.inc.php` and setting up scecret token, you could give a push event to go!
+
+<img src="https://raw.githubusercontent.com/yidas/deployer-php-cli/dev_webhook/img/cicd-gitlab-webhook.png" />
 
 ---
 
