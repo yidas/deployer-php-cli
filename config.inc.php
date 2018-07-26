@@ -43,6 +43,12 @@ return [
                 '',
             ],
         ],
+        'webhook' => [
+            'enabled' => true,
+            'provider' => 'gitlab',
+            'project' => 'yidas/test-submodule-parent',
+            'token' => 'thisistoken',
+        ],
         'verbose' => false,
     ],
 ];
