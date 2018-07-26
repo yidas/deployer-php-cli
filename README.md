@@ -12,9 +12,9 @@ FEATURES
 
 - *Deploy to **multiple** servers by **projects/groups***
 
-- ***Git support** for source project*
+- ***Yii2, Laravel, Codeigniter3** Frameworks support*
 
-- ***Composer support** for source project*
+- ***Git, Composer support** for source project*
 
 - ***Filter** for excluding specified files support*
 
@@ -28,11 +28,17 @@ OUTLINE
 * [Demonstration](#demonstration)
 * [Requirements](#requirements)
 * [Installation](#installation)
-  - [Download](#download)
-  - [Make Command](#make-command)
+  - [Composer Installation](#composer-installation)
+  - [Wget Installation](#wget-installation)
+    - [Make Command](#make-command)
+  - [Startup](#startup)
 * [Configuration](#configuration)
   - [Project Setting](#project-setting)
   - [Config Options](#config-options)
+    - [Git](#git)
+    - [Composer](#composer)
+    - [Rsync](#rsync)
+    - [Commands](#commands)
   - [Example](#example)
 * [Usage](#usage)
   - [Interactive Project Select](#interactive-project-select)
@@ -40,9 +46,11 @@ OUTLINE
   - [Skip Flows](#skip-flows)
   - [Revert & Reset back](#revert--reset-back)
 * [Implementation](#implementation)
+  - [Permissions Handling](#permissions-handling)
 * [Additions](#additions)
   - [Rsync without Password](#rsync-without-password)
   - [Save Binary Encode File](#save-binary-encode-file)
+  - [Yii2 Deployment](#yii2-deployment)
   - [Minify/Uglify by Gulp](#minifyuglify-by-gulp)
   
 ---
@@ -55,21 +63,32 @@ Deploy local project to remote servers by just executing the deployer in command
 ```
 $ deployer
 ```
-Or you can call the original bootstrap:
-```
-$ ./deployer
-$ php ./deployer
-```
 
-The result could like be:
-```
-$ deployer --project="project1"
+> Alternatively, you could call the original bootstrap: `$ ./deployer`, `$ php ./deployer`
 
+The interactive result could like be:
+```
+$ deployer
+
+Your available projects in configuration:
+  [0] your.project.com
+  [1] second.project.com
+  [2] other.site.com
+
+  Please select a project [number or project, Ctrl+C to quit]:0
+
+Selected Project: your.project.com
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
 Successful Excuted Task: Deploy to 127.0.0.11
 Successful Excuted Task: Deploy to 127.0.0.12
 Successful Excuted Task: Deploy
+```
+
+Or you could run by non-interactive mode with the same purpose:
+
+```
+$ deployer --project="your.project.com"
 ```
 
 ---
@@ -87,19 +106,15 @@ This library requires the following:
 INSTALLATION
 ------------
 
-### Download
+### Composer Installation
 
-You could choose a install way between Composer or Wget:
-
-#### Option 1: Composer Installation
+Using Composer by sudoer or root to install is the easiest way with auto-installer:
 
 ```
-composer create-project yidas/deployer-php-cli
+composer create-project --prefer-dist yidas/deployer-php-cli
 ```
 
-or
-
-#### Option 2: Wget Installation
+### Wget Installation
 
 You could see [Release](https://github.com/yidas/deployer-php-cli/releases) for picking up the package with version, for example:
     
@@ -113,17 +128,18 @@ After download, uncompress the package:
 $ tar -zxvf deployer-php-cli.tar.gz
 ```
 
-### Make Command
+#### Make Command
 
 To make a command for deployer, if the package folder is `deployer-php-cli` then create a symbol by following command: 
 
 ```
+$ sudo chmod +x $(pwd -L)/deployer-php-cli/deployer
 $ sudo ln -s $(pwd -L)/deployer-php-cli/deployer /usr/bin/deployer
 ```
 
-> you could check `deployer-php-cli/deployer` file is executable, if not you can modify excuted property by `chmod +x`.
+### Startup
 
-After all, you could start to set up the `config.inc.php` for deployer, and enjoy to use:
+After installation, you could start to set up the `config.inc.php` for deployer, and enjoy to use:
 
 ```
 $ deployer
@@ -166,12 +182,14 @@ return [
         'composer' => [
             'enabled' => true,
             'path' => './',
-            'command' => 'composer install',
+            // 'path' => ['./', './application/'],
+            'command' => 'composer -n install',
         ],
         'rsync' => [
             'params' => '-av --delete',
-            'sleepSeconds' => 0,
-            'timeout' => 60,
+            // 'sleepSeconds' => 0,
+            // 'timeout' => 60,
+            // 'identityFile' => '/home/deployer/.ssh/id_rsa',
         ],
         'commands' => [
             'before' => [
@@ -185,6 +203,8 @@ return [
 
 ### Config Options:
 
+Configuration provides many features' setting, you could customize and pick up the setting you need.
+
 |Key|Type|Description|
 |:-|:-|:-|
 |**servers**|array|Distant server host list|
@@ -196,6 +216,12 @@ return [
 
 #### Git
 
+To use Git into deploy task, you need to init or clone Git to the source directory at the first time:
+
+```
+$ git clone git@gitlab.com:username/project-to-deploy.git sourceDir
+```
+
 |Key|Type|Description|
 |:-|:-|:-|
 |enabled|bool|Enable git or not|
@@ -205,10 +231,12 @@ return [
 
 #### Composer
 
+To use Composer into deploy task, make sure that there are composer files in the source directory.
+
 |Key|Type|Description|
 |:-|:-|:-|
 |enabled|bool|Enable Composer or not|
-|path|string|Composer executing relative path|
+|path|string|Composer executing relative path which supports multiple array paths|
 |command|string|Update command likes `composer update`|
 
 #### Rsync
@@ -218,8 +246,11 @@ return [
 |params|string|Addition params of rsync command|
 |timeout|int|Timeout seconds of each rsync connections|
 |sleepSeconds|int|Seconds waiting of each rsync connections|
+|identityFile|string|Identity file path for appling rsync|
 
 #### Commands
+
+Commands provides you to customize deploy tasks with many trigger hooks.
 
 |Key|Type|Description|
 |:-|:-|:-|
@@ -254,7 +285,7 @@ Usage:
   ./deployer [options] [arguments]
 
 Options:
-      --help            Display this help message
+  -h, --help            Display this help message
       --version         Show the current version of the application
   -p, --project         Project key by configuration for deployment
       --config          Show the seleted project configuration
@@ -272,10 +303,11 @@ $ deployer
 
 Your available projects in configuration:
   [0] default
-  [1] project1
+  [1] your.project.com
 
-  Please select a project [number or project, Ctrl+C to quit]:default
+  Please select a project [number or project, Ctrl+C to quit]:your.project.com
 
+Selected Project: your.project.com
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
 Successful Excuted Task: Deploy to 127.0.0.11
@@ -285,7 +317,7 @@ Successful Excuted Task: Deploy
 ### Non-Interactive Project Select
 
 ```
-$ deployer --project="default"
+$ deployer --project="your.project.com"
 ```
 
 ### Skip Flows
@@ -349,6 +381,28 @@ return [
 After running this tool to deploy `project1`, the stage project's files would execute processes likes `git pull` then synchronise to production.
 
 
+### Permissions Handling
+
+##### 1. Local and Remote Users
+
+You could create a user on local for runing Deployer with `umask 002`. It will run process by the local user you set even you run Deployer by root:
+
+```php
+return [
+    'project1' => [
+         'user' => [
+            'local' => 'deployer',
+            'remote' => 'deployer',
+        ],
+        ...
+```
+
+##### 2. Application File Permissions
+
+On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the local user generates `664/775` mod files to deploy for remote `www-data` access. 
+
+> `umask 002` could be set in `~/.bashrc` or global. Note that the permission need to apply for source files such as init from Git clone.
+
 ---
 
 ADDITIONS
@@ -368,6 +422,23 @@ While excuting script, if you get the error like `Exception: Zend Extension ./de
 
 ```
 :set ff=unix
+```
+
+### Yii2 Deployment
+
+For `yii2-app-advanced`, requiring Composer and yii2 init command for `config.inc.php`:
+
+```php
+'composer' => [                     
+    'enabled' => true,              
+    'path' => './',                 
+    'command' => 'composer install',
+],                                  
+'commands' => [
+    'before' => [
+        'yii2 init prod' => './init --env=Production --overwrite=All',
+    ],
+],
 ```
 
 ### Minify/Uglify by Gulp

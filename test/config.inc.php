@@ -21,7 +21,7 @@ return [
             'branch' => 'master',
         ],
         'composer' => [
-            'enabled' => true,
+            'enabled' => false,
             'path' => './',
             'command' => 'composer install',
         ],

@@ -3,12 +3,12 @@
 /**
  * Application
  * 
- * @since       1.2.1
+ * @since       1.6.1
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 class App
 {
-    const VERSION = '1.2.1';
+    const VERSION = '1.6.1';
     
     function __construct() 
     {
@@ -29,6 +29,7 @@ class App
          * Options definition
          */
         $shortopts  = "";
+        $shortopts .= "h";
         $shortopts .= "p:";
         $shortopts .= "v";
 
@@ -52,7 +53,7 @@ class App
     
             $projectKey = $getOpt->get(['project', 'p']);
             $showConfig = $getOpt->has(['config', 'configuration']);
-            $showHelp = $getOpt->has(['help']);
+            $showHelp = $getOpt->has(['help', 'h']);
             $showVersion = $getOpt->has(['version']);
 
             /**
@@ -126,6 +127,8 @@ class App
             }
 
             $config = &$configList[$projectKey];
+            // Add `projectKey` key to the current config 
+            $config['projectKey'] = $projectKey;
 
             // Rewrite config
             $config['git']['enabled'] = ($getOpt->has('skip-git')) 
