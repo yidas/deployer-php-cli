@@ -42,11 +42,12 @@ try {
         }
         // Webhook branch check
         elseif (isset($config['webhook']['branch']) && $config['webhook']['branch']!=$info['branch']) {
+            $errorInfo[] = "Branch {$info['branch']} could not be matched from webhook config";
             continue;
         }
         // Use Git branch setting while no branch setting in Webhook
         elseif (!isset($config['webhook']['branch']) && isset($config['git']['branch']) && $config['git']['branch']!=$info['branch']) {
-            $errorInfo[] = "Branch {$info['branch']} could not be matched";
+            $errorInfo[] = "Branch {$info['branch']} could not be matched from Git config";
             continue;
         }
         
@@ -64,7 +65,7 @@ try {
 
 // Matched config check
 if (empty($matchedConfig)) {
-    responeseWithPack($errorInfo, 403, 'No matched config found');
+    responeseWithPack($errorInfo, 404, 'No matched config found');
     exit;
 }
 // Authorization while setting token 
