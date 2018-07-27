@@ -32,6 +32,7 @@ OUTLINE
   - [Wget Installation](#wget-installation)
     - [Make Command](#make-command)
   - [Startup](#startup)
+  - [Upgrade](#upgrade)
 * [Configuration](#configuration)
   - [Project Setting](#project-setting)
   - [Config Options](#config-options)
@@ -147,6 +148,17 @@ After installation, you could start to set up the `config.inc.php` for deployer,
 
 ```
 $ deployer
+```
+
+### Upgrade
+
+To upgrade, you could re-install the deployer and copy the old `config.inc.php` to the new one, for example:
+
+```
+$ cp ./deployer-php-cli/config.inc.php ./
+$ rm -r deployer-php-cli
+$ composer create-project --prefer-dist yidas/deployer-php-cli
+$ mv ./config.inc.php ./deployer-php-cli
 ```
 
 ---
