@@ -108,9 +108,14 @@ if ($logMode) {
     $logList = is_array($oldList) ? $oldList : [];
     
     // Output
-    foreach ($logList as $key => $row) {
-        echo "{$row['datetime']}<pre>". $row['response'] ."</pre>";
+    if ($logList) {
+        foreach ($logList as $key => $row) {
+            echo "{$row['datetime']}<pre>". $row['response'] ."</pre>";
+        }
+    } else {
+        echo 'No record yet';
     }
+    
     exit;
 }
 
