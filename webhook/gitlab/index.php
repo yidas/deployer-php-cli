@@ -90,6 +90,10 @@ elseif (isset($matchedConfig['webhook']['token']) && $info['token'] != $matchedC
 
 // Log mode
 if ($logMode) {
+
+    if (!isset($matchedConfig['webhook']['log'])) {
+        die('Log setting is disabled');
+    }
     
     $logFile = is_string($matchedConfig['webhook']['log']) 
         ? $matchedConfig['webhook']['log'] 
