@@ -3,6 +3,11 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+$defaultLogFile = '/tmp/deployer-php-cli_webhook.log';
+
+// Log mode
+$logMode = isset($_GET['log']);
+
 // GitLab data fetch
 $inputToken = isset($_SERVER['HTTP_X_GITLAB_TOKEN']) ? $_SERVER['HTTP_X_GITLAB_TOKEN'] : null;
 $body = file_get_contents('php://input');
@@ -17,6 +22,15 @@ $info = [
     'branch' => str_replace('refs/heads/', '', $data['ref']),
 ];
 // writeLog($info);exit;
+
+// Log mode info rewite
+if ($logMode) {
+    $info = [
+        'token' => isset($_GET['token']) ? $_GET['token'] : null,
+        'project' => $_GET['log'],
+        'branch' => isset($_GET['branch']) ? $_GET['branch'] : 'master',
+    ];
+}
 
 try {
 
@@ -69,11 +83,45 @@ if (empty($matchedConfig)) {
     exit;
 }
 // Authorization while setting token 
-elseif (isset($matchedConfig['webhook']['token']) && $inputToken != $matchedConfig['webhook']['token']) {
+elseif (isset($matchedConfig['webhook']['token']) && $info['token'] != $matchedConfig['webhook']['token']) {
     responeseWithPack(['inputToken' => $info['token']], 403, 'Token is invalid');
     exit;
 }
 
+// Log mode
+if ($logMode) {
+    
+    $logFile = is_string($matchedConfig['webhook']['log']) 
+        ? $matchedConfig['webhook']['log'] 
+        : $defaultLogFile;
+
+    if (!file_exists($logFile)) {
+        die('Log file not found');
+    }
+    
+    // Read log
+    $oldList = json_decode(file_get_contents($logFile), true);
+    $logList = is_array($oldList) ? $oldList : [];
+    
+    // Output
+    foreach ($logList as $key => $row) {
+        echo "{$row['datetime']}<pre>". $row['response'] ."</pre>";
+    }
+    exit;
+}
+
+/**
+ * Fast response for webhook
+ */
+responeseWithPack([
+    'resultUrl' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") 
+        . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"
+        . "?log={$info['project']}&branch={$info['branch']}&token={$info['token']}"
+], 200, 'Deployer will start processing! Check log for result information.');
+ignore_user_abort(true);
+header('Connection: close'); 
+flush();
+fastcgi_finish_request();
 
 /**
  * Bootstrap
@@ -83,13 +131,41 @@ require __DIR__. '/../../src/ShellConsole.php';
 require __DIR__. '/../../src/Deployer.php';
 // Initial Deployer
 $deployer = new Deployer($matchedConfig);
-// Response format
-http_response_code(200);
-header('Content-Type: text/html; charset=utf-8');
 // Run Deployer
-$deployer->run();
+$res = $deployer->run();
 
-// responeseWithPack($info, 200, 'Success');
+if ($res && isset($matchedConfig['webhook']['log'])) {
+
+    // Max rows per each log file
+    $limit = 100;
+    // Log file
+    $logFile = is_string($matchedConfig['webhook']['log']) 
+        ? $matchedConfig['webhook']['log'] 
+        : $defaultLogFile;
+    // Format
+    $row = [
+        'provider' => $config['webhook']['provider'],
+        'info' => $info, 
+        'datetime' => date("Y-m-d H:i:s"), 
+        'response' => $res,
+    ];
+    // Log text
+    $logList = [];
+
+    if (file_exists($logFile)) {
+        
+        // Read log
+        $oldList = json_decode(file_get_contents($logFile), true);
+        $logList = is_array($oldList) ? $oldList : [];
+        // Limit handling
+        if (count($logList) >= $limit) {
+            array_pop($logList);
+        }
+    }
+    array_unshift($logList, $row);
+    // Write back to log
+    file_put_contents($logFile, json_encode($logList));
+}
 
 /**
  * writeLog
@@ -115,8 +191,7 @@ function response($status=200, $body=[])
 {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($body);
-    exit;
+    echo json_encode($body, JSON_UNESCAPED_SLASHES);
 }
 
 /**

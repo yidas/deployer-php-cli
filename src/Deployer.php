@@ -16,12 +16,24 @@ class Deployer
     use ShellConsole;
     
     private $_config;
+
+    /**
+     * Result response
+     *
+     * @var string Text
+     */
+    private $_response;
     
     function __construct($config)
     {
         $this->_setConfig($config);
     }
-
+    
+    /**
+     * Run
+     *
+     * @return string Result response
+     */
     public function run()
     {
         $config = &$this->_config;
@@ -40,7 +52,7 @@ class Deployer
         $this->_cmd("cd {$this->_config['source']};");
         
         // Project selected info
-        $this->_print("Selected Project: {$config['projectKey']}");
+        $this->_result("Selected Project: {$config['projectKey']}");
 
         $this->runCommands('init');
         $this->runGit();
@@ -49,6 +61,7 @@ class Deployer
         $this->runDeploy();
         $this->runCommands('after');
         
+        return $this->_response;
     }
 
     /**
@@ -394,7 +407,7 @@ class Deployer
      */
     private function _done($string)
     {
-        $this->_print("Successful Excuted Task: {$string}");
+        $this->_result("Successful Excuted Task: {$string}");
     }
 
     /**
@@ -404,8 +417,8 @@ class Deployer
      */
     private function _error($string)
     {
-        $this->_print("Failing Excuted Task: {$string}");
-        $this->_print("(Use -v --verbose parameter to display error message)");
+        $this->_result("Failing Excuted Task: {$string}");
+        $this->_result("(Use -v --verbose parameter to display error message)");
     }
 
     /**
@@ -454,6 +467,17 @@ class Deployer
     }
 
     /**
+     * Result response
+     * 
+     * @param string $string
+     */
+    private function _result($string='')
+    {
+        $this->_response .= $string . "\n";
+        $this->_print($string);
+    }
+
+    /**
      * Verbose response
      * 
      * @param string $string
@@ -461,7 +485,7 @@ class Deployer
     private function _verbose($string='')
     {
         if (isset($this->_config['verbose']) && $this->_config['verbose']) {
-            $this->_print($string);
+            $this->_result($string);
         }
     }
 
