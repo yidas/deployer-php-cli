@@ -440,6 +440,7 @@ return [
             'project' => 'yidas/deployer-php-cli',
             'token' => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
             'branch' => 'release',
+            'log' => '/tmp/deployer-webhook-project.log'
         ],
     ],
 ];
@@ -452,6 +453,7 @@ return [
 |project|string|Provider's project name likes `username/project`|
 |token|string|Webhook secret token|
 |branch|string|Listening branch for push event|
+|log|bool\|string|Enabled log and specify the log file|
 
 #### PHP Web Setting
 
@@ -480,6 +482,8 @@ location ~ \.php$ {
     fastcgi_pass unix:/run/php/php7.0-fpm_deployer.sock;
 }                                                                                                               
 ```
+
+After a successful webhook, Deployer would prepare to process while responding the status and the result url for checking the deployment result. 
 
 #### Gitlab
 

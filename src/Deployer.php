@@ -54,12 +54,20 @@ class Deployer
         // Project selected info
         $this->_result("Selected Project: {$config['projectKey']}");
 
+        // Total cost time start
+        $startSecond = microtime(true);
+
         $this->runCommands('init');
         $this->runGit();
         $this->runComposer();
         $this->runCommands('before');
         $this->runDeploy();
         $this->runCommands('after');
+
+        // Total cost time end
+        $costSecond = abs(microtime(true) - $startSecond);
+        $costSecond = number_format($costSecond, 2, ".", "");
+        $this->_result("Total Cost Time: {$costSecond}s");
         
         return $this->_response;
     }
