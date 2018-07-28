@@ -14,9 +14,9 @@ FEATURES
 
 - ***Yii2, Laravel, Codeigniter3** Frameworks support*
 
-- ***Git, Composer support** for source project*
+- ***Git, Composer support, tasks** for source project*
 
-- ***Filter** for excluding specified files support*
+- ***CI/CD** solution*
 
 Helping developers to deploy codes from local instance to remote instances.
 
@@ -113,7 +113,7 @@ INSTALLATION
 
 ### Composer Installation
 
-Using Composer by sudoer or root to install is the easiest way with auto-installer:
+Using Composer by `sudoer` or `root` to install is the easiest way with auto-installer:
 
 ```
 composer create-project --prefer-dist yidas/deployer-php-cli
@@ -415,9 +415,9 @@ return [
 
 ##### 2. Application File Permissions
 
-On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the local user generates `664/775` mod files to deploy for remote `www-data` access. 
+On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the ***local user*** generates `664/775` mod files to deploy for ***remote*** `www-data` access. 
 
-> `umask 002` could be set in `~/.bashrc` or global. Note that the permission need to apply for source files such as init from Git clone.
+> For local user, `umask 002` could be set in `~/.bashrc` or global. Note that the permission need to apply for source files such as init from Git clone.
 
 ---
 
@@ -428,7 +428,7 @@ CI/CD
 
 Deployer provides webhook feature for triggering project deployment by any webhook service such as Gitlab.
 
-To use webhook, you need add webhook setting into the projects you need in `config.inc.php`:
+To use webhook, you need add webhook setting into the projects you needed in `config.inc.php`:
 
 ```php
 return [

@@ -122,11 +122,14 @@ if ($logMode) {
 /**
  * Fast response for webhook
  */
-responeseWithPack([
-    'resultUrl' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") 
+$data = [];
+// Provide resultUrl when webhook log is enabled
+if (isset($matchedConfig['webhook']['log'])) {
+    $data['resultUrl'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") 
         . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"
-        . "?log={$info['project']}&branch={$info['branch']}&token={$info['token']}"
-], 200, 'Deployer will start processing! Check log for result information.');
+        . "?log={$info['project']}&branch={$info['branch']}&token={$info['token']}";
+}
+responeseWithPack($data, 200, 'Deployer will start processing! Check log for result information.');
 ignore_user_abort(true);
 header('Connection: close'); 
 flush();
