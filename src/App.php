@@ -3,12 +3,12 @@
 /**
  * Application
  * 
- * @since       1.8.0
+ * @since       1.8.1
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 class App
 {
-    const VERSION = '1.8.0';
+    const VERSION = '1.8.1';
     
     function __construct() 
     {
