@@ -375,7 +375,7 @@ class Deployer
             ? $config['user']
             : [];
 
-        $config['user']['local'] = is_string($config['user']) ? $config['user'] : '';
+        $config['user']['local'] = is_string($config['user']) ? $config['user'] : $config['user']['local'];
         $config['user']['local'] = (isset($config['user']['local']) && $config['user']['local']) 
             ? $config['user']['local']
             : $this->_getUser();
