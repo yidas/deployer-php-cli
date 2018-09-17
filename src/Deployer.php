@@ -4,7 +4,7 @@
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
- * @since       1.8.2
+ * @since       1.9.0
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 
@@ -48,7 +48,7 @@ class Deployer
          * @todo Switch user
          */
         if ($config['user']['local'] && $config['user']['local']!=$this->_getUser()) {
-            $this->_print("Access denied (Allowed user: {$config['user']['local']})");
+            $this->_print("Access denied, please switch to local user: `{$config['user']['local']}` from config");
             exit;
         }
 
