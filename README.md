@@ -415,6 +415,8 @@ return [
 
 ##### 2. Application File Permissions
 
+Deployer uses `rsync` to deploy local source project to remote ***without*** `--no-perms`, which means that the source files' permission would keep on remote, but the files' owner would re-generate by remote user including `root` with `--no-owner --no-group`.
+
 On the remote user, you could set the user's default groud ID to `www-data` in `/etc/passwd`, which the ***local user*** generates `664/775` mod files to deploy for ***remote*** `www-data` access. 
 
 > For local user, `umask 002` could be set in `~/.bashrc` or global. Note that the permission need to apply for source files such as init from Git clone.

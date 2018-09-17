@@ -304,7 +304,7 @@ class Deployer
             $this->_verbose('[Remote ]: '.$config['destination']);
 
             // Rsync destination building for each server
-            $cmd = sprintf("%s %s@%s:%s",
+            $cmd = sprintf("%s --no-owner --no-group %s@%s:%s",
                 $rsyncCmd,
                 $config['user']['remote'],
                 $server,
