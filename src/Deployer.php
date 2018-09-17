@@ -43,9 +43,13 @@ class Deployer
        
         ob_implicit_flush();
 
-        // Local user
+        // Local user check
+        /**
+         * @todo Switch user
+         */
         if ($config['user']['local'] && $config['user']['local']!=$this->_getUser()) {
-            $result = $this->_cmd("su {$config['user']['local']};");
+            $this->_print("Access denied (Allowed user: {$config['user']['local']})");
+            exit;
         }
 
         // cd into source directory
@@ -278,7 +282,8 @@ class Deployer
             : null;
         if ($identityFile && file_exists($identityFile)) {
             $rsyncCmd .= " -e \"ssh -i {$identityFile}\"";
-        } else {
+        } 
+        elseif ($identityFile) {
             $this->_error("Deploy (IdentityFile not found: {$identityFile})");
         }
 
