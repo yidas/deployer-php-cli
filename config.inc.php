@@ -33,6 +33,7 @@ return [
             'command' => 'composer -n install',
         ],
         'rsync' => [
+            'enabled' => true,
             'params' => '-av --delete',
             // 'sleepSeconds' => 0,
             // 'timeout' => 60,

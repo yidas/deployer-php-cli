@@ -202,6 +202,7 @@ return [
             'command' => 'composer -n install',
         ],
         'rsync' => [
+            'enabled' => true,
             'params' => '-av --delete',
             // 'sleepSeconds' => 0,
             // 'timeout' => 60,
@@ -259,6 +260,7 @@ To use Composer into deploy task, make sure that there are composer files in the
 
 |Key|Type|Description|
 |:-|:-|:-|
+|enabled|bool|Enable rsync or not|
 |params|string|Addition params of rsync command|
 |timeout|int|Timeout seconds of each rsync connections|
 |sleepSeconds|int|Seconds waiting of each rsync connections|
@@ -561,6 +563,11 @@ touch gulpfile.js
 #### 4. Set Gulp with packages
 
 Package: [gulp-uglify](https://www.npmjs.com/package/gulp-uglify)
+
+```
+$ npm install gulp-uglify --save-dev
+$ npm install pump --save-dev
+```
 
 `gulpfile.js`:
 

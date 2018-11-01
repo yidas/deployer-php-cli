@@ -263,22 +263,37 @@ class Deployer
     public function runDeploy()
     {
         // Config
-        $config = &$this->_config;
+        $config = isset( $this->_config['rsync']) ?  $this->_config['rsync'] : [];
+
+        // Default config
+        $defaultConfig = [
+            'enabled' => true,
+            'params' => '-av --delete',
+            'timeout' => 15,
+        ];
+        
+        // Config init
+        $config = array_merge($defaultConfig, $this->_config['rsync']);
+        
+        // Check enabled
+        if (!$config['enabled']) {
+            return;
+        }
 
         /**
          * Command builder
          */
-        $rsyncCmd = 'rsync ' . $config['rsync']['params'];
+        $rsyncCmd = 'rsync ' . $config['params'];
 
         // Add exclude
-        $excludeFiles = $config['exclude'];
+        $excludeFiles = $this->_config['exclude'];
         foreach ((array)$excludeFiles as $key => $file) {
             $rsyncCmd .= " --exclude \"{$file}\"";
         }
 
         // IdentityFile
-        $identityFile = isset($config['rsync']['identityFile']) 
-            ? $config['rsync']['identityFile'] 
+        $identityFile = isset($config['identityFile']) 
+            ? $config['identityFile'] 
             : null;
         if ($identityFile && file_exists($identityFile)) {
             $rsyncCmd .= " -e \"ssh -i {$identityFile}\"";
@@ -290,30 +305,30 @@ class Deployer
         // Common parameters
         $rsyncCmd = sprintf("%s --timeout=%d %s",
             $rsyncCmd,
-            isset($config['rsync']['timeout']) ? $config['rsync']['timeout'] : 15,
-            $config['source']
+            $config['timeout'],
+            $this->_config['source']
         );
 
         /**
          * Process
          */
-        foreach ($config['servers'] as $key => $server) {         
+        foreach ($this->_config['servers'] as $key => $server) {         
 
             // Info display
             $this->_verbose("");
             $this->_verbose("### Rsync Process Info");
             $this->_verbose('[Process]: '.($key+1));
             $this->_verbose('[Server ]: '.$server);
-            $this->_verbose('[User   ]: '.$config['user']['remote']);
-            $this->_verbose('[Source ]: '.$config['source']);
-            $this->_verbose('[Remote ]: '.$config['destination']);
+            $this->_verbose('[User   ]: '.$this->_config['user']['remote']);
+            $this->_verbose('[Source ]: '.$this->_config['source']);
+            $this->_verbose('[Remote ]: '.$this->_config['destination']);
 
             // Rsync destination building for each server
             $cmd = sprintf("%s --no-owner --no-group %s@%s:%s",
                 $rsyncCmd,
-                $config['user']['remote'],
+                $this->_config['user']['remote'],
                 $server,
-                $config['destination'] 
+                $this->_config['destination'] 
             );
             
             $this->_verbose('[Command]: '.$cmd);
@@ -339,9 +354,9 @@ class Deployer
             } else {
 
                 // Sleep option per each deployed server
-                if (isset($config['rsync']['sleepSeconds'])) {
+                if (isset($config['sleepSeconds'])) {
                     
-                    sleep((int)$config['rsync']['sleepSeconds']);
+                    sleep((int)$config['sleepSeconds']);
                 }
 
                 $this->_done("Deploy to {$server}");
