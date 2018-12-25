@@ -4,7 +4,7 @@
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
- * @since       1.9.0
+ * @since       1.10.0
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 
@@ -241,14 +241,57 @@ class Deployer
             if (!$cmd) {
                 continue;
             }
+
+            // Format compatibility
+            $cmd = is_array($cmd) ? $cmd : ['command' => $cmd];
             
             $this->_verbose("");
             $this->_verbose("### Command:{$key} Process Start");
             
             // Format command
-            $cmd = "{$cmd};";
-            $result = $this->_cmd($cmd, true);
+            $command = "{$cmd['command']};";
+            $result = $this->_cmd($command, true);
 
+            /**
+             * Success on error checker
+             */
+            $successOn = isset($cmd['successOn']) ? $cmd['successOn'] : null;
+            // Success on config
+            if ($successOn) {
+                // Condition: include text
+                if (isset($successOn['include'])) {
+                    // Error while not including
+                    if (strpos($result, $successOn['include'])===false) {
+                        
+                        $this->_error("Command:{$key} (result does not include: `{$successOn['include']}`)");
+                    }
+                }
+                // Condition: not include text
+                if (isset($successOn['!include'])) {
+                    // Error while including
+                    if (strpos($result, $successOn['!include'])!==false) {
+                        
+                        $this->_error("Command:{$key} (result includes: `{$successOn['!include']}`)");
+                    }
+                }
+                // Condition: prefix text
+                if (isset($successOn['prefix'])) {
+                    // Error while prefix does not match
+                    if (strpos($result, $successOn['prefix'])!==0) {
+                        
+                        $this->_error("Command:{$key} (Prefix does not match: `{$successOn['prefix']}`)");
+                    }
+                }
+                // Condition: not prefix text
+                if (isset($successOn['!prefix'])) {
+                    // Error while prefix matches
+                    if (strpos($result, $successOn['!prefix'])===0) {
+                        
+                        $this->_error("Command:{$key} (Prefix matches: `{$successOn['!prefix']}`)");
+                    }
+                }
+            }
+            
             $this->_verbose("### Command:{$key} Process Result");
             $this->_verbose($result);
             $this->_verbose("### Command:{$key} Process Start");
@@ -447,6 +490,7 @@ class Deployer
     {
         $this->_result("Failing Excuted Task: {$string}");
         $this->_result("(Use -v --verbose parameter to display error message)");
+        exit;
     }
 
     /**

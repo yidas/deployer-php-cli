@@ -23,7 +23,7 @@ $info = [
 ];
 // writeLog($info);exit;
 
-// Log mode info rewite
+// Log mode info rewrite
 if ($logMode) {
     $info = [
         'token' => isset($_GET['token']) ? $_GET['token'] : null,

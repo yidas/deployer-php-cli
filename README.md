@@ -272,9 +272,30 @@ Commands provides you to customize deploy tasks with many trigger hooks.
 
 |Key|Type|Description|
 |:-|:-|:-|
-|init|array|Addition commands trigger at initialization|
-|before|array|Addition commands trigger before deploying|
-|after|array|Addition commands trigger after deploying|
+|init|array|Addition commands triggered at initialization|
+|before|array|Addition commands triggered before deploying|
+|after|array|Addition commands triggered after deploying|
+
+##### Advanced Command Format
+
+Each Command can be string or advanced array format.
+
+|Key|Type|Description|
+|:-|:-|:-|
+|command|string|Command line string|
+|successOn|array|The condition used to verify the success of the command result|
+
+The successOn conditions:
+
+|Key|Type|Description|
+|:-|:-|:-|
+|include|string|The text must be included in the command result|
+|!include|string|The text must not be included in the command result|
+|prefix|string|The text must match the start text of the command result|
+|!prefix|string|The text must not match the start text of the command result|
+
+> The example for conditions can be referred to [Minify/Uglify by Gulp](#5-set-gulp-process-into-deployer).
+
 
 ### Example
 
@@ -522,13 +543,11 @@ While excuting script, if you get the error like `Exception: Zend Extension ./de
 
 ### Yii2 Deployment
 
-For `yii2-app-advanced`, requiring Composer and yii2 init command for `config.inc.php`:
+For `yii2-app-advanced`, you need to enable Composer and set yii2 init command in `config.inc.php`:
 
 ```php
 'composer' => [                     
-    'enabled' => true,              
-    'path' => './',                 
-    'command' => 'composer install',
+    'enabled' => true,          
 ],                                  
 'commands' => [
     'before' => [
@@ -592,12 +611,20 @@ gulp.task('compress', function (callback) {
 
 ```
 'source' => '/srv/project',
-'commands' => [
-    'before' => [
-        'Minify JS' => 'cd /srv/tools/minify-project; gulp compress',
-    ],
-],
+'commands' => [                                                    
+    'before' => [                                                  
+        'Minify inner JS' => [                                     
+            'command' => 'cd /srv/tools/minify-project; gulp compress',
+            'successOn' => [                                       
+                'include' => 'Finished',                           
+                '!include' => 'errored after',                     
+            ]                                                      
+        ]                                                          
+    ],                                                             
+],  
 ```
+
+> The [`successOn`](#advanced-command-format) [conditions](#advanced-command-format) uses to varify the result of `gulp compress` execution.
 
 
 

@@ -3,12 +3,12 @@
 /**
  * Application
  * 
- * @since       1.9.0
+ * @since       1.10.0
  * @author      Nick Tsai <myintaer@gmail.com>
  */
 class App
 {
-    const VERSION = '1.9.0';
+    const VERSION = '1.10.0';
     
     function __construct() 
     {
@@ -126,7 +126,9 @@ class App
                 }
             }
 
-            $config = &$configList[$projectKey];
+            // Config initialized
+            $defaultConfig = require __DIR__. '/default-config.inc.php';
+            $config = array_replace_recursive($defaultConfig, $configList[$projectKey]);
             // Add `projectKey` key to the current config 
             $config['projectKey'] = $projectKey;
 

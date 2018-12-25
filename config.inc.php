@@ -20,14 +20,14 @@ return [
             'tmp/*',
         ],
         'git' => [
-            'enabled' => true,
+            'enabled' => false,
             'path' => './',
             'checkout' => true,
             'branch' => 'master',
             'submodule' => false,
         ],
         'composer' => [
-            'enabled' => true,
+            'enabled' => false,
             'path' => './',
             // 'path' => ['./', './application/'],
             'command' => 'composer -n install',
@@ -45,7 +45,7 @@ return [
             ],
         ],
         'webhook' => [
-            'enabled' => true,
+            'enabled' => false,
             'provider' => 'gitlab',
             'project' => 'yidas/test-submodule-parent',
             'token' => 'thisistoken',
