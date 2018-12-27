@@ -4,7 +4,6 @@ Deployer PHP-CLI
 CI/CD Deployment tool written in PHP supported for popular frameworks
 
 [![Latest Stable Version](https://poser.pugx.org/yidas/deployer-php-cli/v/stable?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
-[![Latest Unstable Version](https://poser.pugx.org/yidas/deployer-php-cli/v/unstable?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
 [![License](https://poser.pugx.org/yidas/deployer-php-cli/license?format=flat-square)](https://packagist.org/packages/yidas/deployer-php-cli)
 
 FEATURES
@@ -174,49 +173,18 @@ You need to set up the projects configuration such as servers, source and destin
 <?php
 
 return [
+    // This project config processes deployment only for simple usage
     'default' => [
         'servers' => [
             '127.0.0.1',
         ],
-        'user' => [
-            'local' => '',
-            'remote' => '',
-        ],
-        'source' => '/var/www/html/project',
-        'destination' => '/var/www/html/test/',
-        'exclude' => [
-            '.git',
-            'tmp/*',
-        ],
-        'git' => [
-            'enabled' => true,
-            'path' => './',
-            'checkout' => true,
-            'branch' => 'master',
-            'submodule' => false,
-        ],
-        'composer' => [
-            'enabled' => true,
-            'path' => './',
-            // 'path' => ['./', './application/'],
-            'command' => 'composer -n install',
-        ],
-        'rsync' => [
-            'enabled' => true,
-            'params' => '-av --delete',
-            // 'sleepSeconds' => 0,
-            // 'timeout' => 60,
-            // 'identityFile' => '/home/deployer/.ssh/id_rsa',
-        ],
-        'commands' => [
-            'before' => [
-                '',
-            ],
-        ],
-        'verbose' => false,
+        'source' => '/home/user/project',
+        'destination' => '/var/www/html/prod/',
     ],
 ];
 ```
+
+> You could refer [config.inc.php](https://github.com/yidas/deployer-php-cli/blob/master/config.inc.php) file as an example..
 
 ### Config Options:
 
@@ -618,8 +586,8 @@ gulp.task('compress', function (callback) {
             'successOn' => [                                       
                 'include' => 'Finished',                           
                 '!include' => 'errored after',                     
-            ]                                                      
-        ]                                                          
+            ],                                                      
+        ],                                                          
     ],                                                             
 ],  
 ```

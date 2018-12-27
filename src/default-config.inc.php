@@ -33,7 +33,6 @@ return [
         'sleepSeconds' => 0,
         'timeout' => 60,
         'identityFile' => null,
-        // 'identityFile' => '/home/deployer/.ssh/id_rsa',
     ],
     'commands' => [
         'before' => [
