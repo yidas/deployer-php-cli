@@ -141,6 +141,9 @@ fastcgi_finish_request();
 // Loader
 require __DIR__. '/../../src/ShellConsole.php';
 require __DIR__. '/../../src/Deployer.php';
+// Config initialized
+$defaultConfig = require __DIR__. '/../../src/default-config.inc.php';
+$matchedConfig = array_replace_recursive($defaultConfig, $matchedConfig);
 // Initial Deployer
 $deployer = new Deployer($matchedConfig);
 // Run Deployer
