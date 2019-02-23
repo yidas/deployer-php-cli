@@ -37,6 +37,8 @@ OUTLINE
   - [Config Options](#config-options)
     - [Git](#git)
     - [Composer](#composer)
+    - [Test](#test)
+    - [Tests](#tests)
     - [Rsync](#rsync)
     - [Commands](#commands)
   - [Example](#example)
@@ -223,6 +225,38 @@ To use Composer into deploy task, make sure that there are composer files in the
 |enabled|bool|Enable Composer or not|
 |path|string|Composer executing relative path which supports multiple array paths|
 |command|string|Update command likes `composer update`|
+
+#### Test
+
+To use Test into deploy task, make sure that there are test configuration in the source directory.
+
+|Key|Type|Description|
+|:-|:-|:-|
+|enabled|bool|Enable Test or not|
+|name|string|The test name for display|
+|type|string|Test type, support `phpunit`.|
+|command|string|The test bootstrap command supported relative filepath such as `./vendor/bin/phpunit`|
+|configuration|string|The test configuration file supported relative filepath such as `./phpunit.xml`|
+
+#### Tests
+
+For multiple test tasks, using array to declare each [test options](#test):
+
+```php
+return [
+    'default' => [
+        'tests' => [
+            [
+                'name' => 'Test Task 1',
+                // ...
+            ],
+            [
+                'name' => 'Test Task 2',
+                // ...
+            ],
+        ],
+        // ...
+```
 
 #### Rsync
 

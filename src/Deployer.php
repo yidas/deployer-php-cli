@@ -64,6 +64,8 @@ class Deployer
         $this->runCommands('init');
         $this->runGit();
         $this->runComposer();
+        $this->runTest();
+        $this->runTests();
         $this->runCommands('before');
         $this->runDeploy();
         $this->runCommands('after');
@@ -214,6 +216,91 @@ class Deployer
         $this->_verbose("### /Composer Process End\n");
 
         $this->_done("Composer");
+    }
+
+    /**
+     * Test Process
+     */
+    public function runTest($config=null)
+    {
+        if (!$config) {
+            if (!isset($this->_config['test'])) {
+                return;
+            }
+            
+            // Test Config
+            $config = &$this->_config['test'];
+        }
+        
+        // Check enabled
+        if (!$config || empty($config['enabled']) ) {
+            return;
+        }
+        
+        // Commend required
+        if (!isset($config['command'])) {
+            $this->_error("Test (Config `command` not found)");
+        }
+
+        $name = (isset($config['name'])) ? $config['name'] : $config['command'];
+
+        // Start process
+        $this->_verbose("");
+        $this->_verbose("### Test `{$name}` Process Start");
+
+        // command
+        $cmd = $this->_getAbsolutePath($config['command']);
+
+        $configuration = (isset($config['configuration'])) ? $this->_getAbsolutePath($config['configuration']) : null;
+
+        switch ($type = isset($config['type']) ? $config['type'] : null) {
+            
+            case 'phpunit':
+            default:
+                
+                $cmd = ($configuration) ? "{$cmd} -c {$configuration}" : $cmd;
+                break;
+        }
+        
+        // Shell execution
+        $result = $this->_cmd($cmd);
+
+        $this->_verbose("### Test `{$name}` Process Result");
+        $this->_verbose($result);
+
+        // Failures check
+        if (strpos($result, 'FAILURES!')!==false) {
+            
+            $this->_error("Test");
+            $this->_verbose($result);
+            exit;
+        }
+
+        $this->_verbose($result);
+        $this->_verbose("### /Test Process End\n");
+
+        $this->_done("Test `{$name}`");
+    }
+
+    /**
+     * Test Process
+     */
+    public function runTests()
+    {
+        if (!isset($this->_config['tests'])) {
+            return;
+        }
+        
+        // Tests Config
+        $configs = &$this->_config['tests'];
+
+        if (!is_array($configs)) {
+            $this->_error("Tests (Config must be array)");
+        }
+
+        foreach ($configs as $key => $config) {
+            $this->runTest($config);
+        }
     }
 
     /**

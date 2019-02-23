@@ -41,6 +41,14 @@ return [
             // 'path' => ['./', './application/'],
             'command' => 'composer -n install',
         ],
+        'test' => [
+            'enabled' => false,
+            'name' => 'PHPUnit',
+            'type' => 'phpunit',
+            // CodeIgniter 3 for example (https://github.com/yidas/codeigniter-phpunit)
+            'command' => './application/vendor/bin/phpunit',
+            'configuration' => './application/phpunit.xml',
+        ],
         'rsync' => [
             'enabled' => true,
             'params' => '-av --delete',
