@@ -278,27 +278,6 @@ Commands provides you to customize deploy tasks with many trigger hooks.
 |before|array|Addition commands triggered before deploying|
 |after|array|Addition commands triggered after deploying|
 
-##### Advanced Command Format
-
-Each Command can be string or advanced array format.
-
-|Key|Type|Description|
-|:-|:-|:-|
-|command|string|Command line string|
-|successOn|array|The condition used to verify the success of the command result|
-
-The successOn conditions:
-
-|Key|Type|Description|
-|:-|:-|:-|
-|include|string|The text must be included in the command result|
-|!include|string|The text must not be included in the command result|
-|prefix|string|The text must match the start text of the command result|
-|!prefix|string|The text must not match the start text of the command result|
-
-> The example for conditions can be referred to [Minify/Uglify by Gulp](#5-set-gulp-process-into-deployer).
-
-
 ### Example
 
 * Copy `project` directory form `/var/www/html/` to destination under `/var/www/html/test/`:
@@ -616,17 +595,10 @@ gulp.task('compress', function (callback) {
 'commands' => [                                                    
     'before' => [                                                  
         'Minify inner JS' => [                                     
-            'command' => 'cd /srv/tools/minify-project; gulp compress',
-            'successOn' => [                                       
-                'include' => 'Finished',                           
-                '!include' => 'errored after',                     
-            ],                                                      
+            'command' => 'cd /srv/tools/minify-project; gulp compress',                                                 
         ],                                                          
     ],                                                             
 ],  
 ```
-
-> The [`successOn`](#advanced-command-format) [conditions](#advanced-command-format) uses to varify the result of `gulp compress` execution.
-
 
 

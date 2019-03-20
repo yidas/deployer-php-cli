@@ -13,9 +13,35 @@ trait ShellConsole
      * @param string $cmd
      * @return mixed Response
      */
-    private function _exec($cmd)
+    // private function _exec($cmd)
+    // {
+    //     return shell_exec($cmd);
+    // }
+
+    /**
+     * Execute command line with status returning
+     *
+     * @param string $cmd
+     * @param string $resultText
+     * @param array $output
+     * @param integer $errorCode
+     * @return boolean Last command success or not
+     */
+    private function _exec($cmd, &$resultText='', &$output='', &$errorCode='')
     {
-        return shell_exec($cmd);
+        $cmd = trim($cmd);
+        $cmd = rtrim($cmd, ';');
+    
+        // stdout
+        $cmd = "{$cmd} 2>&1;";
+        exec($cmd, $output, $errorCode);
+    
+        // Build result text
+        foreach ($output as $key => $string) {
+            $resultText .= "{$string}\r\n";
+        }
+    
+        return (!$errorCode) ? true : false;
     }
     
     /** 
@@ -25,7 +51,9 @@ trait ShellConsole
      */
     private function _getUser()
     {
-        return trim($this->_exec('echo $USER;'));
+        $this->_exec('echo $USER;', $user);
+        
+        return trim($user);
     }
 
     /**

@@ -114,35 +114,35 @@ class Deployer
 
         // Git Checkout
         if ($config['checkout']) {
-            $result = $this->_cmd("git checkout -- .", $path);
-            // Git common error check
-            $this->checkErrorGit($result);
+            $result = $this->_cmd("git checkout -- .", $output, $path);
+            // Common error check
+            $this->checkError($result, $output);
         }
         // Git pull
         $cmd = ($config['branch']) 
             ? "git pull origin {$config['branch']}"
             : "git pull";
-        $result = $this->_cmd($cmd, $path);  
-        // Git common error check
-        $this->checkErrorGit($result);
+        $result = $this->_cmd($cmd, $output, $path);  
+        // Common error check
+        $this->checkError($result, $output);
         $this->_verbose("### Git Process Pull");
-        $this->_verbose($result);
+        $this->_verbose($output);
 
         // Git Checkout
         if (isset($config['submodule']) && $config['submodule']) {
-            $result = $this->_cmd("git submodule init", $path);
-            $result = $this->_cmd("git submodule update", $path);
-            // Git common error check
-            $this->checkErrorGit($result);
+            $result = $this->_cmd("git submodule init", $output, $path);
+            $result = $this->_cmd("git submodule update", $output, $path);
+            // Common error check
+            $this->checkError($result, $output);
         }
 
         // Git reset commit
         if (isset($config['reset']) && $config['reset']) {
-            $result = $this->_cmd("git reset --hard {$config['reset']}", $path);
+            $result = $this->_cmd("git reset --hard {$config['reset']}", $output, $path);
             $this->_verbose("### Git Process Reset Commit");
             $this->_verbose($result);
-            // Git common error check
-            $this->checkErrorGit($result);
+            // Common error check
+            $this->checkError($result, $output);
         } 
 
         $this->_verbose("### /Git Process End\n");
@@ -184,21 +184,18 @@ class Deployer
         
             $cmd = $config['command'];
             // Shell execution
-            $result = $this->_cmd($cmd, $path);
+            $result = $this->_cmd($cmd, $output, $path);
 
             $this->_verbose("### Composer Process Result");
-            $this->_verbose($result);
+            $this->_verbose($output);
 
             /**
              * Check error
              */
-            // White list: Loading composer & Do not run Composer(sudo warning)
-            if (strpos($result, 'Loading composer')==0
-                || strpos($result, 'Do not run Composer')==0) {
-                    
-                // Success
-            } else {
+            if (!$result) {
                 // Error
+                $this->_verbose($output);
+                // Single or multiple
                 if ($isSinglePath) {
                     // Single path does not show the key
                     $this->_error("Composer");
@@ -206,9 +203,6 @@ class Deployer
                     // Multiple paths shows current info
                     $this->_error("Composer #{$key} with path: {$path}");
                 }
-                
-                $this->_verbose($result);
-                exit;
             }
 
         }
@@ -263,20 +257,14 @@ class Deployer
         }
         
         // Shell execution
-        $result = $this->_cmd($cmd);
+        $result = $this->_cmd($cmd, $output);
 
         $this->_verbose("### Test `{$name}` Process Result");
-        $this->_verbose($result);
+        $this->_verbose($output);
 
         // Failures check
-        if (strpos($result, 'FAILURES!')!==false) {
-            
-            $this->_error("Test");
-            $this->_verbose($result);
-            exit;
-        }
+        $this->checkError($result, $output);
 
-        $this->_verbose($result);
         $this->_verbose("### /Test Process End\n");
 
         $this->_done("Test `{$name}`");
@@ -337,50 +325,16 @@ class Deployer
             
             // Format command
             $command = "{$cmd['command']};";
-            $result = $this->_cmd($command, true);
+            $result = $this->_cmd($command, $output, true);
 
-            /**
-             * Success on error checker
-             */
-            $successOn = isset($cmd['successOn']) ? $cmd['successOn'] : null;
-            // Success on config
-            if ($successOn) {
-                // Condition: include text
-                if (isset($successOn['include'])) {
-                    // Error while not including
-                    if (strpos($result, $successOn['include'])===false) {
-                        
-                        $this->_error("Command:{$key} (result does not include: `{$successOn['include']}`)");
-                    }
-                }
-                // Condition: not include text
-                if (isset($successOn['!include'])) {
-                    // Error while including
-                    if (strpos($result, $successOn['!include'])!==false) {
-                        
-                        $this->_error("Command:{$key} (result includes: `{$successOn['!include']}`)");
-                    }
-                }
-                // Condition: prefix text
-                if (isset($successOn['prefix'])) {
-                    // Error while prefix does not match
-                    if (strpos($result, $successOn['prefix'])!==0) {
-                        
-                        $this->_error("Command:{$key} (Prefix does not match: `{$successOn['prefix']}`)");
-                    }
-                }
-                // Condition: not prefix text
-                if (isset($successOn['!prefix'])) {
-                    // Error while prefix matches
-                    if (strpos($result, $successOn['!prefix'])===0) {
-                        
-                        $this->_error("Command:{$key} (Prefix matches: `{$successOn['!prefix']}`)");
-                    }
-                }
+            // Check
+            if (!$result) {
+                $this->_verbose($output);
+                $this->_error("Command:{$key}");
             }
             
             $this->_verbose("### Command:{$key} Process Result");
-            $this->_verbose($result);
+            $this->_verbose($output);
             $this->_verbose("### Command:{$key} Process Start");
 
             $this->_done("Commands {$trigger}: {$key}");
@@ -464,11 +418,11 @@ class Deployer
             $this->_verbose('[Command]: '.$cmd);
 
             // Shell execution
-            $result = $this->_cmd($cmd);
+            $result = $this->_cmd($cmd, $output);
 
             $this->_verbose("### Rsync Process Result");
             $this->_verbose("--------------------------");
-            $this->_verbose($result);
+            $this->_verbose($output);
             $this->_verbose("----------------------------");
             $this->_verbose("");
 
@@ -476,10 +430,9 @@ class Deployer
              * Check error
              */
             // Success only: sending incremental file list
-            if (strpos($result, 'sending')!==0) {
+            if (!$result) {
                 // Error
                 $this->_error("Deploy to {$server}");
-                $this->_verbose($result);
 
             } else {
 
@@ -576,7 +529,9 @@ class Deployer
     private function _error($string)
     {
         $this->_result("Failing Excuted Task: {$string}");
-        $this->_result("(Use -v --verbose parameter to display error message)");
+        if (!isset($this->_config['verbose']) || !$this->_config['verbose']) {
+            $this->_result("(Use -v --verbose parameter to display error message)");
+        }
         exit;
     }
 
@@ -601,10 +556,11 @@ class Deployer
      * Command (Shell as default)
      * 
      * @param string $cmd
+     * @param string $resultText
      * @param bool|string cd into source directory first (CentOS issue), string for customization
      * @return mixed Response
      */
-    private function _cmd($cmd, $cdSource=false, $output=false)
+    private function _cmd($cmd, &$resultText='', $cdSource=false)
     {
         // Clear rtrim
         $cmd = rtrim($cmd, ';');
@@ -615,14 +571,7 @@ class Deployer
             $cmd = "cd {$path};{$cmd}";
         }
 
-        if (!$output) {
-            $cmd .= " 2>&1";
-        }
-
-        // End cmd
-        $cmd = "{$cmd};";
-
-        return $this->_exec($cmd);
+        return $this->_exec($cmd, $resultText);
     }
 
     /**
@@ -651,17 +600,16 @@ class Deployer
     /**
      * check error for Git
      *
-     * @param string $result Command result
+     * @param boolean $result Command result
+     * @param string $output Result text
      * @return void
      */
-    private function checkErrorGit($result)
+    private function checkError($result, $output)
     {
-        // Git common characteristic
-        if (strpos($result, 'fatal: ')!==false) {
+        if (!$result) {
             
+            $this->_verbose($output);
             $this->_error("Git");
-            $this->_verbose($result);
-            exit;
         }
     }
 }
