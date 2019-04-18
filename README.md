@@ -134,6 +134,8 @@ After download, uncompress the package:
 $ tar -zxvf deployer-php-cli.tar.gz
 ```
 
+> In addition, you can rename the unzipped folder by  `mkdir deployer-php-cli && tar -zxvf deployer-php-cli.tar.gz --strip-components 1 -C deployer-php-cli`
+
 #### Make Command
 
 To make a command for deployer, if the package folder is `deployer-php-cli` then create a symbol by following command: 
