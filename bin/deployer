@@ -2,11 +2,12 @@
 
 <?php
 /**
- * Deployer
+ * Deployer.
  *
  * Application for deploying projects with management, supporting git and excluding files.
  *
  * @version     1.2.1
+ *
  * @author      Nick Tsai <myintaer@gmail.com>
  * @filesource  PHP 5.4.0+
  * @filesource  RSYNC commander
@@ -14,14 +15,14 @@
  * @filesource  Composer commander
  *
  * @param string $argv[1] Project
+ *
  * @example
  *  $ ./deployer                        // Interactive Project Select
  *  $ ./deployer --project="default"    // Non-Interactive Project Select
  */
 
 // App loader
-require __DIR__. '/src/App.php';
-
+require __DIR__.'/../src/App.php';
 
 /* Bootstrap */
 
@@ -29,11 +30,10 @@ require __DIR__. '/src/App.php';
 // ini_set("display_errors", 1);
 
 /* Config List Handler */
-$configList = require __DIR__. '/config.inc.php';
+$configList = require __DIR__.'/../config.inc.php';
 // print_r($configList);
 
 $argv = isset($argv) ? $argv : [];
 
-$app = new App;
+$app = new App();
 $app->run($configList, $argv);
-
