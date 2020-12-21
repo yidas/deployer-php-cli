@@ -39,6 +39,8 @@ return [
             'enabled' => true,
             'path' => './',
             // 'path' => ['./', './application/'],
+            // If You use Xdebug on php-fpm
+            // 'command' => 'COMPOSER_ALLOW_XDEBUG=1 composer -n install',
             'command' => 'composer -n install',
         ],
         'test' => [
