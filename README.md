@@ -13,9 +13,9 @@ FEATURES
 
 - ***Yii2, Laravel, Codeigniter3** Frameworks support*
 
-- ***Git, Composer support, tasks** for source project*
+- ***Pipeline support** for Git, Composer, test and customized tasks*
 
-- ***CI/CD** solution*
+- ***CI/CD** automation solution*
 
 Helping developers to deploy codes from local instance to remote instances.
 
@@ -64,6 +64,10 @@ OUTLINE
 DEMONSTRATION
 -------------
 
+![Basic Flow](https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/yidas/deployer-php-cli/master/img/sequence-diagram.plantuml)
+
+### Command Line
+
 Deploy local project to remote servers by just executing the deployer in command after installation:
 
 ```
@@ -86,9 +90,13 @@ Your available projects in configuration:
 Selected Project: your.project.com
 Successful Excuted Task: Git
 Successful Excuted Task: Composer
+Successful Excuted Task: Composer
+Successful Excuted Task: Test UnitTest
+Successful Excuted Task: Commands before: Minify assets
 Successful Excuted Task: Deploy to 127.0.0.11
 Successful Excuted Task: Deploy to 127.0.0.12
 Successful Excuted Task: Deploy
+Successful Excuted Task: Commands after: Email notification
 ```
 
 Or you could run by non-interactive mode with the same purpose:
@@ -492,6 +500,8 @@ location ~ \.php$ {
 ```
 
 After a successful webhook, Deployer would prepare to process while responding the status and the result url for checking the deployment result. 
+
+> Note: The `PATH` environment variable between Shell and PHP should be set to the same to prevent any unexpected problems.
 
 #### Gitlab
 

@@ -1,0 +1,29 @@
+@startuml
+actor "User" as user
+participant "Stage Server" as stage
+participant "Git Repository" as repo
+participant "Production Server Group" as real
+
+
+alt Automation
+  user -> repo: Push released branch
+  repo -> stage: Trigger webhook
+else Manual
+user -> stage: SSH tunnel
+stage -> stage: Run by command line
+end
+
+group Pipeline
+  stage -> stage: Git, Composer, test, tasks before
+  stage -> real: Rsync
+  real --> stage: Result
+  stage -> stage: Tasks after
+end group
+
+alt Log Mode enabled
+stage -> stage: Save log file
+user -> stage: Browse result web page
+stage --> user: Result report
+end
+
+@enduml
