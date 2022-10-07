@@ -513,6 +513,9 @@ According to above Nginx website setting, the webhook URL could be `https://webh
 
 > Note: Default setting is listen `release` branch's push event to trigger.
 
+To browse the web page for result log report, enter the same webhook URL with `log` and `token` parameters to access.
+For example: `https://webhook.your.com/gitlab?log={project-name}&token={project-token}`
+
 ---
 
 ADDITIONS
