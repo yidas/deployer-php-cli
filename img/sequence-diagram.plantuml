@@ -22,7 +22,7 @@ end group
 
 alt Log Mode enabled
 stage -> stage: Save log file
-user -> stage: Browse result web page
+user -> stage: Browse result web page \n(Secret token)
 stage --> user: Result report
 end
 
